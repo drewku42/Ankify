@@ -25,7 +25,7 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 | PDF / exports storage | `**STORAGE_DRIVER=local`** on disk (`storage/` paths) | S3 optional later                                  |
 
 
-`[BUSINESS_CONTEXT.md](../BUSINESS_CONTEXT.md)` describes **product** goals; its **ECS/Lambda** split is **aspirational** — do not assume that layout when debugging production.
+`[BUSINESS_CONTEXT.md](../BUSINESS_CONTEXT.md)` is updated for **v1 shipped** (Vercel + EC2). Older “future infra” sketches in other notes may still mention ECS/Lambda — production is **not** that split.
 
 ---
 
@@ -107,8 +107,8 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 
 ## Local development
 
-- **Docker:** `docker compose up -d` → **MySQL** (LocalStack in compose was removed/disabled; **S3 not required** locally if using `STORAGE_DRIVER=local`).
-- **Ports:** Frontend 5173, backend 3000, AI 8000, MySQL 3306.
+- **Docker:** `docker compose up -d` → **MySQL**. **Optional S3:** put `LOCALSTACK_AUTH_TOKEN` in **repo-root** `.env` (see `.env.example`), then `docker compose --profile localstack up -d` and set **`STORAGE_DRIVER=s3`** in `backend/.env` with `S3_ENDPOINT_URL=http://localhost:4566`.
+- **Ports:** Frontend 5173, backend 3000, AI 8000, MySQL 3306, LocalStack 4566 (when profile is up).
 - **Frontend API:** Default `VITE_API_URL` falls back to `/api`; Vite proxies `/api` → `localhost:3000`.
 - **AI pipeline smoke test:** `ai-server/test_pipeline.py` against a sample PDF.
 
