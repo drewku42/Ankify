@@ -70,10 +70,11 @@ export default function UploadPage() {
       await generateDeck(result.deck.id).unwrap();
       navigate(`/decks/${result.deck.id}`);
     } catch (err: unknown) {
-      const message =
-        err && typeof err === "object" && "data" in err
-          ? String((err as { data: { error?: string } }).data?.error)
-          : "Something went wrong";
+      let message = "Something went wrong";
+      if (err && typeof err === "object" && "data" in err) {
+        const data = (err as { data?: { error?: string; detail?: string } }).data;
+        message = data?.detail || data?.error || message;
+      }
       setError(message);
       setIsCreating(false);
     }
