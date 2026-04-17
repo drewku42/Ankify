@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "ankify-backend",
-      cwd: "/opt/ankify/backend",
+      cwd: "/home/ubuntu/Ankify/backend",
       script: "dist/index.js",
       env: {
         NODE_ENV: "production",
@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       name: "ankify-ai",
-      cwd: "/opt/ankify/ai-server",
+      cwd: "/home/ubuntu/Ankify/ai-server",
       script: "start-ai.sh",
       interpreter: "bash",
       env: {

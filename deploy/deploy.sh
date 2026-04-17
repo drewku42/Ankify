@@ -9,14 +9,14 @@ echo "=== Pulling latest changes ==="
 git pull origin main
 
 echo "=== Deploying backend ==="
-cd /opt/ankify/backend
+cd /home/ubuntu/Ankify/backend
 npm install --production
 npx prisma migrate deploy
 npx prisma generate
 npm run build
 
 echo "=== Deploying AI server ==="
-cd /opt/ankify/ai-server
+cd /home/ubuntu/Ankify/ai-server
 poetry install --no-root
 
 echo "=== Restarting services ==="
