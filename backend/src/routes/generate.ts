@@ -107,7 +107,11 @@ router.post("/deck/:deckId", async (req: Request, res: Response) => {
     });
 
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Generation failed:", message);
+    const cause =
+      err instanceof Error && err.cause != null
+        ? String(err.cause)
+        : "";
+    console.error("Generation failed:", message, cause || "");
     res.status(500).json({ error: "Card generation failed", detail: message });
   }
 });
