@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -12,9 +12,10 @@ class Settings(BaseSettings):
     aws_access_key_id: str = "test"
     aws_secret_access_key: str = "test"
 
-    cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
+    # Comma-separated URLs (not JSON). e.g. CORS_ORIGINS=https://ankify.io,https://api.ankify.io
+    cors_origins: str = "http://localhost:5173,http://localhost:3000"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 settings = Settings()
