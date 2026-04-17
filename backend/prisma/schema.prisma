@@ -1,0 +1,62 @@
+ generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  avatar    String?
+  googleId  String   @unique
+  decks     Deck[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Deck {
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  sourceFileKey  String?
+  sourceFileName String?
+  status         String   @default("draft")
+  cards          Card[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Card {
+  id            String      @id @default(uuid())
+  deckId        String
+  deck          Deck        @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  cardType      String
+  front         String      @db.Text
+  back          String      @db.Text
+  sourcePageNum Int?
+  sortOrder     Int         @default(0)
+  media         CardMedia[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([deckId])
+}
+
+model CardMedia {
+  id       String @id @default(uuid())
+  cardId   String
+  card     Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  fileKey  String
+  fileName String
+  mimeType String
+
+  @@index([cardId])
+}

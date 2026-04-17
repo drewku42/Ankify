@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "ankify-ai-server"
+version = "0.1.0"
+description = "AI server for Ankify — PDF to Anki flashcard generation"
+authors = ["Drew Meyer"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115"
+uvicorn = {extras = ["standard"], version = "^0.34"}
+langchain = "^0.3"
+langchain-openai = "^0.3"
+pydantic = "^2.0"
+pydantic-settings = "^2.0"
+pdf2image = "^1.17"
+genanki = "^0.13"
+boto3 = "^1.35"
+pillow = "^11.0"
+python-multipart = "^0.0.18"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+pytest-asyncio = "^0.24"
+ruff = "^0.8"
+mypy = "^1.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
