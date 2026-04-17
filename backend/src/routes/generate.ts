@@ -111,8 +111,15 @@ router.post("/deck/:deckId", async (req: Request, res: Response) => {
       err instanceof Error && err.cause != null
         ? String(err.cause)
         : "";
-    console.error("Generation failed:", message, cause || "");
-    res.status(500).json({ error: "Card generation failed", detail: message });
+    const detail = [message, cause].filter(Boolean).join(" | ");
+    console.error(
+      "Generation failed:",
+      message,
+      cause || "",
+      "url=",
+      `${config.aiServer.url}/generate/deck`
+    );
+    res.status(500).json({ error: "Card generation failed", detail });
   }
 });
 

@@ -21,6 +21,30 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", service: "ankify-backend" });
 });
 
+/** Checks that the Node process can reach the AI server (same checks as /generate). */
+app.get("/health/ai", async (_req, res) => {
+  const base = config.aiServer.url.replace(/\/$/, "");
+  try {
+    const r = await fetch(`${base}/openapi.json`, { method: "GET" });
+    const ok = r.ok;
+    res.status(ok ? 200 : 502).json({
+      status: ok ? "ok" : "error",
+      aiServerUrl: base,
+      aiHttpStatus: r.status,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    const cause =
+      err instanceof Error && err.cause != null ? String(err.cause) : "";
+    res.status(502).json({
+      status: "error",
+      aiServerUrl: base,
+      error: message,
+      cause: cause || undefined,
+    });
+  }
+});
+
 app.use("/auth", authRoutes);
 app.use("/decks", deckRoutes);
 app.use("/decks", cardRoutes);

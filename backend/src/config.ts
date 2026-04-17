@@ -46,6 +46,7 @@ export const config = {
   },
 
   aiServer: {
-    url: optional("AI_SERVER_URL", "http://localhost:8000"),
+    // Default 127.0.0.1: on Linux, "localhost" can resolve to ::1 while uvicorn listens on IPv4 only.
+    url: optional("AI_SERVER_URL", "http://127.0.0.1:8000"),
   },
 } as const;
