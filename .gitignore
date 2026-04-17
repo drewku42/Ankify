@@ -40,7 +40,11 @@ htmlcov/
 # Generated
 *.apkg
 uploads/
-storage/
+# Local storage (PDF uploads); keep directory via .gitkeep
+backend/storage/*
+!backend/storage/.gitkeep
+storage/*
+!storage/.gitkeep
 
 # Docker
 docker-data/
