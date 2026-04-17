@@ -23,7 +23,7 @@ ai-server/    → Python + FastAPI + LangChain + genanki (poetry)
 
 ### Quick Start
 
-1. Start infrastructure (MySQL + LocalStack S3):
+1. Start **MySQL** (LocalStack was removed; dev uses **local filesystem** storage — see `docker-compose.yml`):
 
 ```bash
 docker compose up -d
@@ -61,17 +61,19 @@ The app runs at [http://localhost:5173](http://localhost:5173)
 ## Services
 
 
-| Service         | Port | Tech                  |
-| --------------- | ---- | --------------------- |
-| Frontend        | 5173 | React + Vite          |
-| Backend API     | 3000 | Express + Prisma      |
-| AI Server       | 8000 | FastAPI + LangChain   |
-| MySQL           | 3306 | MySQL 8.0             |
-| LocalStack (S3) | 4566 | S3-compatible storage |
+| Service       | Port | Tech                                                   |
+| ------------- | ---- | ------------------------------------------------------ |
+| Frontend      | 5173 | React + Vite                                           |
+| Backend API   | 3000 | Express + Prisma                                       |
+| AI Server     | 8000 | FastAPI + LangChain                                    |
+| MySQL         | 3306 | MySQL 8.0                                              |
+| S3 (optional) | —    | Only if `STORAGE_DRIVER=s3`; local dev uses filesystem |
 
 
 ## Documentation
 
-- [Business Context](./BUSINESS_CONTEXT.md) — product scope, architecture, and decisions
+- **[Agent onboarding](./docs/AGENT.md)** — read first for deploy, env vars, and production gotchas (zero prior context)
+- [Business Context](./BUSINESS_CONTEXT.md) — product scope and decisions (infra section may predate the shipped EC2 + Vercel stack)
+- [Next session / roadmap](./docs/TODO-ROADMAP.md) — backlog, pricing notes, ops reminders ([shorter duplicate](./docs/NEXT_SESSION.md))
 - [Anki Reference](./docs/anki/) — Anki format specs, data model, and library docs
 

@@ -47,23 +47,26 @@ sudo npm install -g pm2
 echo "=== Installing Git ==="
 sudo apt install -y git
 
+APP_ROOT="${ANKIFY_ROOT:-/home/ubuntu/Ankify}"
+
 echo "=== Creating app directory ==="
-sudo mkdir -p /opt/ankify
-sudo chown ubuntu:ubuntu /opt/ankify
+sudo mkdir -p "$APP_ROOT"
+sudo chown ubuntu:ubuntu "$APP_ROOT"
 
 echo ""
 echo "=== Setup complete! ==="
 echo ""
-echo "Next steps:"
-echo "  1. Clone your repo:  cd /opt/ankify && git clone <repo-url> ."
-echo "  2. Copy Nginx config: sudo cp deploy/nginx/api.ankify.io /etc/nginx/sites-available/"
-echo "  3. Enable site:       sudo ln -s /etc/nginx/sites-available/api.ankify.io /etc/nginx/sites-enabled/"
-echo "  4. Remove default:    sudo rm /etc/nginx/sites-enabled/default"
+echo "Next steps (repo path must match deploy/ecosystem.config.cjs — default $APP_ROOT):"
+echo "  1. Clone your repo:  git clone <repo-url> $APP_ROOT"
+echo "  2. Copy Nginx config: sudo cp $APP_ROOT/deploy/nginx/api.ankify.io /etc/nginx/sites-available/"
+echo "  3. Enable site:       sudo ln -sf /etc/nginx/sites-available/api.ankify.io /etc/nginx/sites-enabled/"
+echo "  4. Remove default:    sudo rm -f /etc/nginx/sites-enabled/default"
 echo "  5. Test Nginx:        sudo nginx -t && sudo systemctl reload nginx"
 echo "  6. Get SSL cert:      sudo certbot --nginx -d api.ankify.io"
 echo "  7. Create .env files: cp backend/.env.example backend/.env && cp ai-server/.env.example ai-server/.env"
-echo "  8. Edit .env files with production values"
-echo "  9. Deploy backend:    cd backend && npm install && npx prisma migrate deploy && npm run build"
-echo " 10. Deploy AI server:  cd ai-server && poetry install --no-root"
-echo " 11. Start services:    pm2 start deploy/ecosystem.config.cjs"
-echo " 12. Save PM2:          pm2 save && pm2 startup"
+echo "  8. Edit .env files with production values (see deploy/*.env.production templates)"
+echo "  9. Deploy backend:    cd $APP_ROOT/backend && npm ci && npx prisma migrate deploy && npm run build"
+echo " 10. Deploy AI server:  cd $APP_ROOT/ai-server && poetry install --no-root"
+echo " 11. chmod +x $APP_ROOT/ai-server/start-ai.sh"
+echo " 12. Start services:    cd $APP_ROOT && pm2 start deploy/ecosystem.config.cjs"
+echo " 13. Save PM2:          pm2 save && pm2 startup"

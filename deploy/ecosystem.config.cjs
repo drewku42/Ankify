@@ -1,8 +1,11 @@
+// Set ANKIFY_ROOT on the server if the repo lives somewhere other than ~/Ankify.
+const root = process.env.ANKIFY_ROOT || "/home/ubuntu/Ankify";
+
 module.exports = {
   apps: [
     {
       name: "ankify-backend",
-      cwd: "/home/ubuntu/Ankify/backend",
+      cwd: `${root}/backend`,
       script: "dist/index.js",
       env: {
         NODE_ENV: "production",
@@ -13,7 +16,7 @@ module.exports = {
     },
     {
       name: "ankify-ai",
-      cwd: "/home/ubuntu/Ankify/ai-server",
+      cwd: `${root}/ai-server`,
       script: "start-ai.sh",
       interpreter: "bash",
       env: {
