@@ -1,21 +1,36 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
+import passport from "passport";
+import { config } from "./config";
+import { prisma } from "./lib/prisma";
 
-dotenv.config();
+import authRoutes from "./routes/auth";
+import deckRoutes from "./routes/decks";
+import cardRoutes from "./routes/cards";
+import generateRoutes from "./routes/generate";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: config.corsOrigin, credentials: true }));
 app.use(express.json());
+app.use(passport.initialize());
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", service: "ankify-backend" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Ankify backend running on http://localhost:${PORT}`);
+app.use("/auth", authRoutes);
+app.use("/decks", deckRoutes);
+app.use("/decks", cardRoutes);
+app.use("/generate", generateRoutes);
+
+app.listen(config.port, () => {
+  console.log(`Ankify backend running on http://localhost:${config.port}`);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
 });
