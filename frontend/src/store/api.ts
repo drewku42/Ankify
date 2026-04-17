@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_URL } from "@/config";
 
 export interface Card {
   id: string;
@@ -49,7 +50,7 @@ interface GenerationMeta {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api",
+    baseUrl: API_URL,
     credentials: "include",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("ankify_token");

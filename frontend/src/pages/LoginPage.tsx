@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
 import { api } from "@/store/api";
+import { API_URL } from "@/config";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -10,13 +11,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   const handleDevLogin = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/dev-login", { method: "POST" });
+      const res = await fetch(`${API_URL}/auth/dev-login`, { method: "POST" });
       if (!res.ok) throw new Error("Dev login failed");
       const data = await res.json();
       dispatch(setCredentials({ user: data.user, token: data.token }));

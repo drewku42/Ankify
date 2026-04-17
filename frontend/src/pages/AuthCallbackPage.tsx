@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials, logout } from "@/store/authSlice";
 import { api } from "@/store/api";
+import { API_URL } from "@/config";
 
 export default function AuthCallbackPage() {
   const [searchParams] = useSearchParams();
@@ -18,7 +19,7 @@ export default function AuthCallbackPage() {
 
     localStorage.setItem("ankify_token", token);
 
-    fetch("/api/auth/me", {
+    fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

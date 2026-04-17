@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setUser, setLoading, logout } from "@/store/authSlice";
+import { API_URL } from "@/config";
 
 export default function AuthLayout() {
   const { user, token, isLoading } = useAppSelector((state) => state.auth);
@@ -15,7 +16,7 @@ export default function AuthLayout() {
     }
     if (user) return;
 
-    fetch("/api/auth/me", {
+    fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

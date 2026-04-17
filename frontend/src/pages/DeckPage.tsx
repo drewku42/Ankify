@@ -8,6 +8,7 @@ import {
   useDeleteDeckMutation,
   type Card,
 } from "@/store/api";
+import { API_URL } from "@/config";
 
 function CardTypeIcon({ type }: { type: string }) {
   if (type === "cloze")
@@ -110,7 +111,7 @@ export default function DeckPage() {
     setIsExporting(true);
     try {
       const token = localStorage.getItem("ankify_token");
-      const response = await fetch(`/api/generate/export/${id}`, {
+      const response = await fetch(`${API_URL}/generate/export/${id}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
