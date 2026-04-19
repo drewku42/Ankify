@@ -50,6 +50,19 @@ app.use("/decks", deckRoutes);
 app.use("/decks", cardRoutes);
 app.use("/generate", generateRoutes);
 
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction
+  ) => {
+    console.error("Unhandled error:", err);
+    const status = "status" in err ? (err as { status: number }).status : 500;
+    res.status(status).json({ error: err.message || "Internal server error" });
+  }
+);
+
 app.listen(config.port, () => {
   console.log(`Ankify backend running on http://localhost:${config.port}`);
 });

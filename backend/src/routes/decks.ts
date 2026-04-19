@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import fs from "fs/promises";
 import { prisma } from "../lib/prisma";
 import { requireAuth } from "../middleware/auth";
 import { pdfUpload } from "../middleware/upload";
@@ -30,29 +31,39 @@ router.post(
     let sourceFileKey: string | null = null;
     let sourceFileName: string | null = null;
 
-    if (req.file) {
-      const key = `uploads/${req.authUser!.id}/${Date.now()}_${req.file.originalname}`;
-      await uploadFile(
-        config.s3.bucketUploads,
-        key,
-        req.file.buffer,
-        req.file.mimetype
-      );
-      sourceFileKey = key;
-      sourceFileName = req.file.originalname;
+    try {
+      if (req.file) {
+        const key = `uploads/${req.authUser!.id}/${Date.now()}_${req.file.originalname}`;
+        const buffer = await fs.readFile(req.file.path);
+        await uploadFile(
+          config.s3.bucketUploads,
+          key,
+          buffer,
+          req.file.mimetype
+        );
+        sourceFileKey = key;
+        sourceFileName = req.file.originalname;
+      }
+
+      const deck = await prisma.deck.create({
+        data: {
+          name,
+          userId: req.authUser!.id,
+          sourceFileKey,
+          sourceFileName,
+          status: req.file ? "uploaded" : "draft",
+        },
+      });
+
+      res.status(201).json({ deck });
+    } catch (err) {
+      console.error("Deck creation failed:", err);
+      res.status(500).json({ error: "Failed to create deck" });
+    } finally {
+      if (req.file?.path) {
+        fs.unlink(req.file.path).catch(() => {});
+      }
     }
-
-    const deck = await prisma.deck.create({
-      data: {
-        name,
-        userId: req.authUser!.id,
-        sourceFileKey,
-        sourceFileName,
-        status: req.file ? "uploaded" : "draft",
-      },
-    });
-
-    res.status(201).json({ deck });
   }
 );
 
