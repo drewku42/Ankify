@@ -19,7 +19,7 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 ## Core Workflow
 
 1. User logs in (Google OAuth; dev login available locally)
-2. User uploads a PDF of lecture slides (up to 10 MB)
+2. User uploads a PDF of lecture slides
 3. App renders slides and sends images to GPT-4o Vision (not plain-text OCR-only)
 4. GPT-4o generates flashcards (basic, cloze deletion, image cards)
 5. User reviews and edits cards in-app (Notion-clean UI, Anki-familiar patterns)
@@ -35,7 +35,7 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 
 | Data Element       | Source         | Notes                                       |
 | ------------------ | -------------- | ------------------------------------------- |
-| PDF lecture slides | User upload    | Clean/blank slides for v1; up to 10 MB    |
+| PDF lecture slides | User upload    | Clean/blank slides for v1; no size limit  |
 | Slide content      | Vision pipeline | Images per page → GPT-4o Vision             |
 | AI-generated cards | OpenAI GPT-4o  | Basic, cloze, and image card types          |
 | User edits         | In-app editor  | Users review and modify generated cards     |
@@ -101,7 +101,7 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 - **AI server:** Python (FastAPI) — separate process from Node backend; co-located on EC2 in production.
 - **PDF processing:** Vision (render slides as images → GPT-4o Vision).
 - **PDF scope:** Clean lecture slides — no annotation detection in v1.
-- **File size:** 10 MB max upload.
+- **File size:** No enforced limit (cost scales with page count, not file size).
 - **Export:** `.apkg` via genanki on the AI server.
 - **Database:** MySQL — Prisma schema: users, decks, cards, etc.
 - **Storage (prod):** Local filesystem on EC2 by default; S3 remains supported in code for future cloud storage.

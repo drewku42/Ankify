@@ -27,9 +27,6 @@ async def generate_deck_from_pdf(
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="File must be a PDF")
 
-    if file.size and file.size > 10 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="File must be under 10 MB")
-
     start = time.time()
 
     pdf_bytes = await file.read()

@@ -148,7 +148,7 @@ export default function UploadPage() {
               <p>
                 <strong>Drop your PDF here</strong> or click to browse
               </p>
-              <p className="upload-zone__hint">PDF files up to 10 MB</p>
+              <p className="upload-zone__hint">PDF files only</p>
             </div>
           )}
         </div>

@@ -2,7 +2,7 @@ server {
     listen 80;
     server_name api.ankify.io;
 
-    client_max_body_size 15M;
+    client_max_body_size 0; # disables body size limit (nginx default is 1M)
 
     location / {
         proxy_pass http://127.0.0.1:3000;
