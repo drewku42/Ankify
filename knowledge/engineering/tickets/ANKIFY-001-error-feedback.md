@@ -3,39 +3,44 @@
 
 | Field        | Value              |
 | ------------ | ------------------ |
-| **Status**   | `open`             |
+| **Status**   | `shipped`          |
 | **Priority** | `urgent`           |
 | **Touches**  | frontend · backend |
 | **Opened**   | 2026-04-19         |
-| **Shipped**  | —                  |
+| **Shipped**  | 2026-04-19         |
 
 
-## Problem
+## Original issue
 
-When something fails (upload error, generation failure, export failure, network issue), the user sees nothing. No toast, no banner, no inline message. They're left guessing whether the app is broken or still working. This also makes it impossible for us to debug issues users report.
+When something fails (upload error, generation failure, export failure, network issue), the user sees nothing. No toast, no banner, no inline message. They're left guessing whether the app is broken or still working. This also makes it impossible to debug issues users report.
 
-## Solution
+## Fix
 
-Add a global error handling + notification layer to the frontend:
+1. **Backend** — Standardize error response shape across all routes: `{ error: string, detail?: string }`. Wire multer errors into the global handler.
+2. **Frontend** — Add a toast/notification system for transient success/error/warning messages. Catch API errors in RTK Query and raw fetch calls, surface user-readable messages.
+3. **Frontend** — Add a global React error boundary so the app never silently fails.
 
-1. **Toast/notification system** — a UI component for transient success/error/warning messages.
-2. **API error standardization** — backend should return consistent error shapes; frontend should parse and display them.
-3. **Catch-all for unhandled errors** — global error boundary so the app never silently fails.
+## Expected behavior
 
-## Acceptance criteria
+- Every failed action (upload, generate, export, edit, delete) shows a visible toast with a human-readable message.
+- Backend never returns raw stack traces — always a clean `{ error }` shape.
+- If the app hits an unrecoverable error, the error boundary shows a "something went wrong" fallback instead of a white screen.
 
-- Failed API calls show a user-readable error message (not raw 500s)
-- Upload failures show a specific error (file too large, wrong format, server down, etc.)
-- Generation failures show a message and a way to retry
-- Export failures show a message
-- Network disconnection is handled gracefully
-- No silent failures — every error path has user-facing feedback
+## QA checklist
+
+- Upload a non-PDF file → toast shows "Only PDF files are allowed"
+- Trigger a generation on a deck with no PDF → error message appears
+- Kill the AI server, then try to generate → toast shows server/connection error
+- Kill the backend, then try any action → network error feedback appears
+- Export a deck → success toast on completion
+- Delete a deck → confirm it works, no silent failure
+- No action on the app should ever fail silently with no user feedback
 
 ## Out of scope
 
-- Retry logic / automatic recovery (nice-to-have, not this ticket)
+- Retry logic / automatic recovery
 - Logging/telemetry to an external service
 
 ## Notes
 
-This is the foundation ticket — it makes every subsequent bug easier to diagnose and fix. Ship first.
+Foundation ticket — ship first. Makes every subsequent fix easier to validate.

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   useGetDeckQuery,
   useUpdateCardMutation,
@@ -32,13 +33,18 @@ function CardEditor({
   const [updateCard, { isLoading }] = useUpdateCardMutation();
 
   const handleSave = async () => {
-    await updateCard({
-      deckId,
-      cardId: card.id,
-      front,
-      back,
-    }).unwrap();
-    onClose();
+    try {
+      await updateCard({
+        deckId,
+        cardId: card.id,
+        front,
+        back,
+      }).unwrap();
+      toast.success("Card saved");
+      onClose();
+    } catch {
+      // Error toast handled by apiErrorMiddleware
+    }
   };
 
   return (
@@ -123,8 +129,9 @@ export default function DeckPage() {
       a.download = `${deck?.name || "deck"}.apkg`;
       a.click();
       URL.revokeObjectURL(url);
+      toast.success("Deck exported");
     } catch {
-      alert("Export failed. Please try again.");
+      toast.error("Export failed. Please try again.");
     } finally {
       setIsExporting(false);
     }
@@ -134,15 +141,24 @@ export default function DeckPage() {
     if (!id) return;
     if (!confirm("Regenerate all cards? This will replace existing cards."))
       return;
-    await generateDeck(id).unwrap();
-    refetch();
+    try {
+      await generateDeck(id).unwrap();
+      refetch();
+    } catch {
+      // Error toast handled by apiErrorMiddleware
+    }
   };
 
   const handleDeleteDeck = async () => {
     if (!id) return;
     if (!confirm("Delete this entire deck?")) return;
-    await deleteDeck(id).unwrap();
-    navigate("/");
+    try {
+      await deleteDeck(id).unwrap();
+      toast.success("Deck deleted");
+      navigate("/");
+    } catch {
+      // Error toast handled by apiErrorMiddleware
+    }
   };
 
   if (isLoading) {

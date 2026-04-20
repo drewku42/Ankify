@@ -5,26 +5,27 @@ import { requireAuth } from "../middleware/auth";
 import { pdfUpload } from "../middleware/upload";
 import { uploadFile } from "../lib/storage";
 import { config } from "../config";
+import { asyncHandler } from "../lib/errors";
 
 const router = Router();
 router.use(requireAuth);
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", asyncHandler(async (req: Request, res: Response) => {
   const decks = await prisma.deck.findMany({
     where: { userId: req.authUser!.id },
     include: { _count: { select: { cards: true } } },
     orderBy: { createdAt: "desc" },
   });
   res.json({ decks });
-});
+}));
 
 router.post(
   "/",
   pdfUpload.single("file"),
-  async (req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { name } = req.body;
     if (!name) {
-      res.status(400).json({ error: "Deck name is required" });
+      res.status(400).json({ error: "Deck name is required", code: "VALIDATION_ERROR" });
       return;
     }
 
@@ -56,18 +57,15 @@ router.post(
       });
 
       res.status(201).json({ deck });
-    } catch (err) {
-      console.error("Deck creation failed:", err);
-      res.status(500).json({ error: "Failed to create deck" });
     } finally {
       if (req.file?.path) {
         fs.unlink(req.file.path).catch(() => {});
       }
     }
-  }
+  }),
 );
 
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", asyncHandler(async (req: Request, res: Response) => {
   const deck = await prisma.deck.findFirst({
     where: { id: req.params.id as string, userId: req.authUser!.id },
     include: {
@@ -79,14 +77,14 @@ router.get("/:id", async (req: Request, res: Response) => {
   });
 
   if (!deck) {
-    res.status(404).json({ error: "Deck not found" });
+    res.status(404).json({ error: "Deck not found", code: "DECK_NOT_FOUND" });
     return;
   }
 
   res.json({ deck });
-});
+}));
 
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", asyncHandler(async (req: Request, res: Response) => {
   const { name, description } = req.body;
 
   const deck = await prisma.deck.findFirst({
@@ -94,7 +92,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   });
 
   if (!deck) {
-    res.status(404).json({ error: "Deck not found" });
+    res.status(404).json({ error: "Deck not found", code: "DECK_NOT_FOUND" });
     return;
   }
 
@@ -107,20 +105,20 @@ router.put("/:id", async (req: Request, res: Response) => {
   });
 
   res.json({ deck: updated });
-});
+}));
 
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", asyncHandler(async (req: Request, res: Response) => {
   const deck = await prisma.deck.findFirst({
     where: { id: req.params.id as string, userId: req.authUser!.id },
   });
 
   if (!deck) {
-    res.status(404).json({ error: "Deck not found" });
+    res.status(404).json({ error: "Deck not found", code: "DECK_NOT_FOUND" });
     return;
   }
 
   await prisma.deck.delete({ where: { id: deck.id } });
   res.json({ success: true });
-});
+}));
 
 export default router;

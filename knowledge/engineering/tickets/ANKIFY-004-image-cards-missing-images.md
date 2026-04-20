@@ -10,25 +10,36 @@
 | **Shipped**  | —                              |
 
 
-## Problem
+## Original issue
 
-Cards typed as "image" in the generated output do not actually contain or render images. The card type exists in the data model and generation output, but the image content is missing — either not extracted from the PDF, not stored, not linked in the card payload, or not rendered in the UI.
+Cards typed as "image" in the generated output do not actually contain or render images. The card type exists in the data model and generation output, but the image content is missing. The pipeline breaks somewhere between AI generation and rendering.
 
-## Solution
+Known from onboarding: `CardMedia` model exists in Prisma but `generate.ts` creates cards via `createMany` without creating any CardMedia rows. The AI response doesn't include media that gets persisted.
 
-Investigate the full pipeline and fix wherever the break is:
+## Fix
 
-1. **AI server**: Does the prompt instruct GPT-4o to reference specific slide images for image cards? Are the images being extracted and stored during PDF processing?
-2. **Backend/storage**: Are image files stored and accessible? Is the card record linked to an image path?
-3. **Frontend**: Does the card renderer handle image cards and display the image?
-4. **Export**: Does the `.apkg` export include images in the media mapping for image cards?
+Investigate and fix the full pipeline:
 
-## Acceptance criteria
+1. **AI server** — Ensure image cards reference extractable slide images. Images from PDF rendering should be stored and their paths/keys included in the AI response payload.
+2. **Backend** — When persisting AI-generated cards, create `CardMedia` rows for image cards with the correct `fileKey`, `fileName`, `mimeType`. Store image files via the storage driver.
+3. **Frontend** — Render image cards with their associated media (using `CardMedia.fileKey` to build the image URL). Differentiate image cards visually from basic/cloze.
+4. **Export** — Ensure `.apkg` export includes images in the media mapping so they display in Anki.
 
-- Image cards display the relevant image in the review/edit UI
-- Image cards export correctly in `.apkg` with media included
-- Images are sourced from the actual slide content (not placeholders)
-- The image card type is clearly differentiated from basic/cloze in the UI
+## Expected behavior
+
+- Image cards show the relevant slide image in the review/edit UI
+- Image cards are visually distinct from basic and cloze cards
+- Exported `.apkg` files include images — they render correctly in Anki Desktop
+- Images are sourced from actual slide content, not placeholders
+
+## QA checklist
+
+- Upload a PDF with image-heavy slides → generation completes
+- Check DeckPage → image cards display the actual slide image
+- Image cards look different from basic/cloze cards in the UI
+- Edit an image card → image still visible
+- Export the deck as `.apkg` → open in Anki Desktop → images render
+- Verify images are not broken/placeholder/missing in the Anki import
 
 ## Out of scope
 
@@ -37,4 +48,4 @@ Investigate the full pipeline and fix wherever the break is:
 
 ## Notes
 
-This touches all three services. Needs investigation to find where the pipeline breaks before committing to a solution. Check `knowledge/engineering/anki/` for `.apkg` media mapping requirements.
+This touches all three services. Deepest pipeline fix in Sprint 0. Check `knowledge/engineering/anki/` for `.apkg` media mapping requirements. Needs investigation before committing to a solution — start with the AI server response to understand what's currently being returned for image cards.

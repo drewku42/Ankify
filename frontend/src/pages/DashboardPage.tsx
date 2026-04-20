@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useGetDecksQuery, useDeleteDeckMutation } from "@/store/api";
 
 function StatusBadge({ status }: { status: string }) {
@@ -80,10 +81,15 @@ export default function DashboardPage() {
                 </time>
                 <button
                   className="deck-card__delete"
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault();
                     if (confirm("Delete this deck?")) {
-                      deleteDeck(deck.id);
+                      try {
+                        await deleteDeck(deck.id).unwrap();
+                        toast.success("Deck deleted");
+                      } catch {
+                        // Error toast handled by apiErrorMiddleware
+                      }
                     }
                   }}
                 >

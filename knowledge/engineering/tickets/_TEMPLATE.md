@@ -1,32 +1,33 @@
 # ANKIFY-000 — Title
 
+| Field | Value |
+|-------|-------|
+| **Status** | `open` |
+| **Priority** | `medium` |
+| **Touches** | frontend · backend · ai-server |
+| **Opened** | YYYY-MM-DD |
+| **Shipped** | — |
 
-| Field        | Value                          |
-| ------------ | ------------------------------ |
-| **Status**   | `open`                         |
-| **Priority** | `medium`                       |
-| **Touches**  | frontend · backend · ai-server |
-| **Opened**   | YYYY-MM-DD                     |
-| **Shipped**  | —                              |
+## Original issue
 
+_What's broken or missing, from the user's perspective._
 
-## Problem
+## Fix
 
-*What's broken or missing, from the user's perspective.*
+_What we're changing. Keep it concrete._
 
-## Solution
+## Expected behavior
 
-*What we're building. Keep it concrete.*
+_After this ships, what should the user see/experience?_
 
-## Acceptance criteria
+## QA checklist
 
-- Criterion 1
-- Criterion 2
+- [ ] Step-by-step verification items for manual testing
 
 ## Out of scope
 
-*What this ticket intentionally does NOT cover.*
+_What this ticket intentionally does NOT cover._
 
 ## Notes
 
-*Context, links, screenshots, related tickets.*
+_Context, links, screenshots, related tickets._

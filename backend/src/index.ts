@@ -2,8 +2,10 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import passport from "passport";
+import { MulterError } from "multer";
 import { config } from "./config";
 import { prisma } from "./lib/prisma";
+import { AppError } from "./lib/errors";
 
 import authRoutes from "./routes/auth";
 import deckRoutes from "./routes/decks";
@@ -55,12 +57,39 @@ app.use(
     err: Error,
     _req: express.Request,
     res: express.Response,
-    _next: express.NextFunction
+    _next: express.NextFunction,
   ) => {
+    const isDev = process.env.NODE_ENV === "development";
+
+    if (err instanceof MulterError) {
+      const multerMessages: Record<string, { msg: string; code: string }> = {
+        LIMIT_FILE_SIZE: { msg: "File is too large", code: "FILE_TOO_LARGE" },
+        LIMIT_UNEXPECTED_FILE: { msg: "Unexpected file field", code: "INVALID_FILE_TYPE" },
+      };
+      const mapped = multerMessages[err.code] ?? { msg: err.message, code: err.code };
+      res.status(400).json({ error: mapped.msg, code: mapped.code });
+      return;
+    }
+
+    if (err.message === "Only PDF files are allowed") {
+      res.status(400).json({ error: err.message, code: "INVALID_FILE_TYPE" });
+      return;
+    }
+
+    if (err instanceof AppError) {
+      res.status(err.status).json({
+        error: err.message,
+        ...(err.code && { code: err.code }),
+      });
+      return;
+    }
+
     console.error("Unhandled error:", err);
-    const status = "status" in err ? (err as { status: number }).status : 500;
-    res.status(status).json({ error: err.message || "Internal server error" });
-  }
+    res.status(500).json({
+      error: "Internal server error",
+      ...(isDev && { detail: err.message, stack: err.stack }),
+    });
+  },
 );
 
 app.listen(config.port, () => {

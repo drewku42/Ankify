@@ -12,11 +12,20 @@
 - **CEO**: The user — makes final calls, invokes agents, sets priorities
 - **Protocol**: All agents read their memory + this file before every task
 - **Contracts**: No API contracts defined yet — will be populated as features are built
-- **Tech Stack**: Not yet determined — will be locked in during first feature work
+- **Tech Stack**: Locked in — see below
 
 ---
 
 ## Conventions (to be filled in as the project evolves)
+
+### Tech Stack (locked in)
+| Layer | Stack | Pkg manager |
+|-------|-------|-------------|
+| Frontend | React 19, Vite 6, React Router 7, Redux Toolkit + RTK Query, global SCSS | Yarn |
+| Backend | Express, Prisma (MySQL), Passport (Google OAuth), JWT, multer, helmet | npm |
+| AI server | FastAPI, LangChain, pdf2image/poppler, genanki | Poetry |
+| Database | MySQL (Docker Compose locally, same EC2 in prod) | — |
+| Storage | Local filesystem (default), S3 driver available | — |
 
 ### API Contracts
 <!-- When frontend and backend agree on an endpoint shape, document it here -->

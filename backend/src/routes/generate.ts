@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma";
 import { requireAuth } from "../middleware/auth";
 import { config } from "../config";
 import { getFile } from "../lib/storage";
+import { asyncHandler } from "../lib/errors";
 
 interface AiCard {
   card_type: string;
@@ -21,18 +22,18 @@ interface AiGenerateResponse {
 const router = Router();
 router.use(requireAuth);
 
-router.post("/deck/:deckId", async (req: Request, res: Response) => {
+router.post("/deck/:deckId", asyncHandler(async (req: Request, res: Response) => {
   const deck = await prisma.deck.findFirst({
     where: { id: req.params.deckId as string, userId: req.authUser!.id },
   });
 
   if (!deck) {
-    res.status(404).json({ error: "Deck not found" });
+    res.status(404).json({ error: "Deck not found", code: "DECK_NOT_FOUND" });
     return;
   }
 
   if (!deck.sourceFileKey) {
-    res.status(400).json({ error: "Deck has no uploaded PDF" });
+    res.status(400).json({ error: "Deck has no uploaded PDF", code: "NO_PDF_UPLOADED" });
     return;
   }
 
@@ -119,17 +120,17 @@ router.post("/deck/:deckId", async (req: Request, res: Response) => {
       "url=",
       `${config.aiServer.url}/generate/deck`
     );
-    res.status(500).json({ error: "Card generation failed", detail });
+    res.status(500).json({ error: "Card generation failed", code: "GENERATION_FAILED", detail });
   }
-});
+}));
 
-router.post("/card/:deckId/:cardId", async (req: Request, res: Response) => {
+router.post("/card/:deckId/:cardId", asyncHandler(async (req: Request, res: Response) => {
   const deck = await prisma.deck.findFirst({
     where: { id: req.params.deckId as string, userId: req.authUser!.id },
   });
 
   if (!deck) {
-    res.status(404).json({ error: "Deck not found" });
+    res.status(404).json({ error: "Deck not found", code: "DECK_NOT_FOUND" });
     return;
   }
 
@@ -138,22 +139,22 @@ router.post("/card/:deckId/:cardId", async (req: Request, res: Response) => {
   });
 
   if (!card) {
-    res.status(404).json({ error: "Card not found" });
+    res.status(404).json({ error: "Card not found", code: "CARD_NOT_FOUND" });
     return;
   }
 
   // TODO: Call AI server to regenerate a single card based on the source page
   res.status(501).json({ error: "Single card regeneration not yet implemented" });
-});
+}));
 
-router.post("/export/:deckId", async (req: Request, res: Response) => {
+router.post("/export/:deckId", asyncHandler(async (req: Request, res: Response) => {
   const deck = await prisma.deck.findFirst({
     where: { id: req.params.deckId as string, userId: req.authUser!.id },
     include: { cards: { orderBy: { sortOrder: "asc" } } },
   });
 
   if (!deck) {
-    res.status(404).json({ error: "Deck not found" });
+    res.status(404).json({ error: "Deck not found", code: "DECK_NOT_FOUND" });
     return;
   }
 
@@ -197,8 +198,8 @@ router.post("/export/:deckId", async (req: Request, res: Response) => {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("Export failed:", message);
-    res.status(500).json({ error: "Export failed", detail: message });
+    res.status(500).json({ error: "Export failed", code: "EXPORT_FAILED", detail: message });
   }
-});
+}));
 
 export default router;

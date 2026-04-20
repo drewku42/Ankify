@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useCreateDeckMutation, useGenerateDeckMutation } from "@/store/api";
 
 export default function UploadPage() {
@@ -11,7 +12,6 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
@@ -34,9 +34,8 @@ export default function UploadPage() {
       if (!name) {
         setName(droppedFile.name.replace(/\.pdf$/i, ""));
       }
-      setError("");
     } else {
-      setError("Please upload a PDF file");
+      toast.warning("Please upload a PDF file");
     }
   }, [name]);
 
@@ -47,35 +46,28 @@ export default function UploadPage() {
       if (!name) {
         setName(selected.name.replace(/\.pdf$/i, ""));
       }
-      setError("");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Please enter a deck name");
+      toast.warning("Please enter a deck name");
       return;
     }
     if (!file) {
-      setError("Please upload a PDF file");
+      toast.warning("Please upload a PDF file");
       return;
     }
 
     setIsCreating(true);
-    setError("");
 
     try {
       const result = await createDeck({ name: name.trim(), file }).unwrap();
       await generateDeck(result.deck.id).unwrap();
       navigate(`/decks/${result.deck.id}`);
-    } catch (err: unknown) {
-      let message = "Something went wrong";
-      if (err && typeof err === "object" && "data" in err) {
-        const data = (err as { data?: { error?: string; detail?: string } }).data;
-        message = data?.detail || data?.error || message;
-      }
-      setError(message);
+    } catch {
+      // API errors surfaced by apiErrorMiddleware
       setIsCreating(false);
     }
   };
@@ -152,8 +144,6 @@ export default function UploadPage() {
             </div>
           )}
         </div>
-
-        {error && <p className="upload-form__error">{error}</p>}
 
         <button
           type="submit"

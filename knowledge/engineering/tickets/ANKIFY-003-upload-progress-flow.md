@@ -8,36 +8,39 @@
 | **Opened** | 2026-04-19 |
 | **Shipped** | — |
 
-## Problem
+## Original issue
 
-After uploading a lecture PDF, the user has no indication of what's happening. There's no progress bar, no status text, no notification when generation finishes. Cards silently appear on the decks tab at some point. Users can't tell if the app is working, stuck, or failed.
+After uploading a lecture PDF, the user has no indication of what's happening. No progress bar, no status text, no notification when generation finishes. Cards silently appear on the decks tab at some point. Users can't tell if the app is working, stuck, or failed. This is the core UX loop and it feels broken.
 
-This is the core UX loop and it feels broken.
+## Fix
 
-## Solution
+1. **Frontend** — Show a spinner/progress indicator during PDF upload.
+2. **Frontend** — After upload, navigate to DeckPage and show the deck's current status (the backend already has a `status` field: `draft` → `uploaded` → `generating` → `ready` → `error`).
+3. **Frontend** — Poll `GET /decks/:id` while status is `generating` to detect completion. On `ready`: refresh card list. On `error`: show error via toast (ANKIFY-001).
+4. **Backend** — Ensure status transitions are reliable and the deck status is exposed clearly in the API response.
 
-Surface the deck lifecycle to the user with clear states:
+## Expected behavior
 
-1. **Upload progress** — show upload percentage / spinner while the file is being sent.
-2. **Processing status** — after upload, show that the PDF is being processed (e.g. "Rendering slides…", "Generating cards…").
-3. **Completion signal** — a clear notification or UI transition when generation is done and cards are ready.
-4. **Error state** — if generation fails partway through, show what happened (ties into ANKIFY-001).
+- User uploads a PDF → sees upload progress (spinner or bar)
+- After upload, DeckPage shows "Generating cards…" with a visual indicator
+- When generation completes, cards appear and the status updates to "Ready"
+- If generation fails, the user sees an error message with what went wrong
+- The user is never left wondering "did it work?"
 
-Implementation options: polling the backend for deck status, or optimistic UI with status on the deck model.
+## QA checklist
 
-## Acceptance criteria
-
-- [ ] User sees upload progress while the file is being sent
-- [ ] After upload, the UI shows the deck is being processed (not just blank)
-- [ ] When generation completes, the user is notified or the view updates visibly
-- [ ] If generation fails, the user sees an error (not silence)
-- [ ] The user is never left wondering "did it work?"
+- [ ] Upload a PDF → spinner/progress visible during upload
+- [ ] After upload, land on DeckPage → "Generating" status visible (not blank)
+- [ ] Wait for generation to complete → cards appear, status changes to ready
+- [ ] Upload a PDF that will fail (e.g. corrupted) → error state shown
+- [ ] Navigate away during generation, come back → status still accurate
+- [ ] Check Dashboard → deck shows its current status (generating/ready/error)
 
 ## Out of scope
 
-- Real-time streaming of individual cards as they generate (separate feature, medium priority)
+- Real-time streaming of individual cards as they generate (separate feature)
 - Cancel/abort generation mid-flight
 
 ## Notes
 
-Depends on ANKIFY-001 for the error path. Backend may need a `status` field on the deck model (e.g. `uploading`, `processing`, `ready`, `error`) to support this — coordinate with Alex.
+Depends on ANKIFY-001 for error display. The Deck model already has `status` (string) — no schema change needed, just frontend polling + UI states.

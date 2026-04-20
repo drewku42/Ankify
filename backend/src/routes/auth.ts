@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config";
 import { prisma } from "../lib/prisma";
 import { requireAuth } from "../middleware/auth";
+import { asyncHandler } from "../lib/errors";
 
 const router = Router();
 
@@ -72,7 +73,7 @@ router.get("/me", requireAuth, (req: Request, res: Response) => {
 });
 
 if (process.env.NODE_ENV === "development") {
-  router.post("/dev-login", async (_req: Request, res: Response) => {
+  router.post("/dev-login", asyncHandler(async (_req: Request, res: Response) => {
     const user = await prisma.user.upsert({
       where: { googleId: "dev-user" },
       update: {},
@@ -89,7 +90,7 @@ if (process.env.NODE_ENV === "development") {
     });
 
     res.json({ token, user });
-  });
+  }));
 }
 
 export default router;

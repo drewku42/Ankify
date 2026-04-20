@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
 import { api } from "@/store/api";
@@ -24,6 +25,7 @@ export default function LoginPage() {
       dispatch(api.util.resetApiState());
       navigate("/", { replace: true });
     } catch {
+      toast.error("Dev login failed");
       setIsLoading(false);
     }
   };
