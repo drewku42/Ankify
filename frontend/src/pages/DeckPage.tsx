@@ -128,7 +128,7 @@ export default function DeckPage() {
   }, [isGenerating]);
 
   // Toast on status transitions
-  const prevStatus = useRef<string | undefined>();
+  const prevStatus = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (!status || !prevStatus.current) {
       prevStatus.current = status;
