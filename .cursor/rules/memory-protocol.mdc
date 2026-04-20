@@ -1,0 +1,24 @@
+---
+description: Enforces the memory read/write protocol for all agent personas.
+globs: ".cursor/memory/**"
+---
+
+# Memory Protocol
+
+Memory files in `.cursor/memory/` are the persistent brain for each agent persona. They survive across chat sessions and serve as the continuity mechanism for a solo-dev team.
+
+## File Purposes
+
+- `frontend.md` — Jordan's (frontend dev) running log of decisions, patterns, and context
+- `backend.md` — Alex's (backend dev) running log of decisions, schemas, and API surface
+- `product.md` — Sam's (product lead) running log of specs, priorities, and roadmap
+- `shared-context.md` — Cross-team decisions, API contracts, and anything that affects multiple agents
+
+## Rules
+
+1. **Read before work**: Every agent MUST read their memory file + shared-context before starting any task
+2. **Write after work**: Every agent MUST append a timestamped entry after completing a task
+3. **Cross-team writes**: If a decision affects another role, append to `shared-context.md`
+4. **Never delete**: Append only. If a decision is reversed, add a new entry explaining the reversal
+5. **Keep it scannable**: Use the prescribed format so future reads are fast
+6. **Prune periodically**: The CEO may ask an agent to summarize and compact old entries

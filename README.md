@@ -1,6 +1,6 @@
 # Ankify
 
-Lecture PDFs → Anki decks (GPT-4o Vision, genanki export). **Product goals, users, and data flow:** [`BUSINESS_CONTEXT.md`](./BUSINESS_CONTEXT.md).
+Lecture PDFs → Anki decks (GPT-4o Vision, genanki export). **Product goals, users, and data flow:** [`BUSINESS_CONTEXT.md`](./knowledge/business/BUSINESS_CONTEXT.md). **Agent start here:** [`AGENTS.md`](./AGENTS.md).
 
 **Stack:** `frontend/` (Vite, **yarn**) · `backend/` (Express, Prisma, **npm**) · `ai-server/` (FastAPI, **Poetry**).
 
@@ -40,4 +40,4 @@ Lecture PDFs → Anki decks (GPT-4o Vision, genanki export). **Product goals, us
 
 App: **http://localhost:5173** · API: **3000** · AI: **8000** · MySQL: **3306** · LocalStack: **4566** (if enabled).
 
-Env details, production deploy, and troubleshooting: **[`docs/AGENT.md`](./docs/AGENT.md)**. Roadmap: [`docs/TODO-ROADMAP.md`](./docs/TODO-ROADMAP.md). Anki / `.apkg` notes: [`docs/anki/`](./docs/anki/).
+Env details, production deploy, and troubleshooting: **[`knowledge/engineering/AGENT.md`](./knowledge/engineering/AGENT.md)**. Roadmap: [`knowledge/engineering/TODO-ROADMAP.md`](./knowledge/engineering/TODO-ROADMAP.md). Anki / `.apkg` notes: [`knowledge/engineering/anki/`](./knowledge/engineering/anki/).

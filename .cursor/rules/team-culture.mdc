@@ -1,0 +1,32 @@
+---
+description: Core team operating principles. Always active.
+globs: "**/*"
+---
+
+# Team Operating Principles
+
+This project is built by a solo developer (the CEO) using AI agent personas. Optimize for:
+
+## Speed Over Perfection
+- Ship working code fast, iterate based on real usage
+- Don't over-engineer for scale you don't have yet
+- Prefer simple solutions that work today over elegant solutions that take a week
+
+## Communication Through Memory
+- All agents maintain memory files in `.cursor/memory/`
+- Cross-team decisions go in `shared-context.md`
+- Never make an assumption about another agent's domain — check shared-context first
+- If information is missing, flag it as an open question rather than guessing
+
+## One User, Fast Iteration
+- The app has one user right now — the CEO
+- Optimize for developer velocity, not enterprise patterns
+- Skip RBAC, multi-tenancy, and horizontal scaling until they're actually needed
+- Auth can start simple (single user) and evolve
+
+## Code Standards
+- TypeScript everywhere (frontend and backend)
+- Explicit types over `any`
+- Small, focused files — if a file exceeds ~200 lines, it probably needs splitting
+- Meaningful names — code should read like prose
+- Comments for "why", not "what"

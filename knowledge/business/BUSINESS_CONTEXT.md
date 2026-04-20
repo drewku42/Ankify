@@ -65,7 +65,7 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 
 ## Where This Will Break
 
-1. **AI cost scaling** — Medium severity. Organic growth among students can raise spend; pricing and caps are a follow-on concern (see `docs/TODO-ROADMAP.md`).
+1. **AI cost scaling** — Medium severity. Organic growth among students can raise spend; pricing and caps are a follow-on concern (see `../engineering/TODO-ROADMAP.md`).
 2. **Card quality** — **High severity. This is the #1 failure mode.** If AI-generated cards are bad, users spend as long editing as they would creating from scratch, and the product is dead. Prompt engineering and card type selection logic are critical.
 3. **PDF extraction quality** — Medium severity. Medical slides can be messy (images, tables, multi-column). v1 assumes clean slides; iterate from real usage.
 4. **Processing time** — Medium severity. Large decks can take many minutes; loading skeleton in UI; Nginx/timeouts must allow long AI calls.
@@ -116,13 +116,13 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 | **PDF processing**     | `pdf2image` / poppler → GPT-4o Vision                                                                                                                            | Preserves visual context (layout, diagrams).                                                              |
 | **`.apkg` generation** | `genanki` (Python) on the AI server                                                                                                                              | Mature library; cloze + media + templates.                                                                |
 | **Card generation**    | LangChain + structured outputs → typed card payloads                                                                                                             | Parseable, validated outputs.                                                                             |
-| **Image handling**     | Images from slides packed into `.apkg` with media mapping                                                                                                        | Anki Legacy 2 expectations (see `docs/anki/`).                                                            |
+| **Image handling**     | Images from slides packed into `.apkg` with media mapping                                                                                                        | Anki Legacy 2 expectations (see `../engineering/anki/`).                                                            |
 | **Local S3 testing**   | LocalStack (optional Docker profile) + `STORAGE_DRIVER=s3`                                                                                                       | Parity with S3 API without AWS in dev.                                                                    |
 
 ## Open Questions (post–v1)
 
 - **Prompt and card-type tuning** — Ongoing from real lecture PDFs and user feedback.
-- **Pricing and usage caps** — See `docs/TODO-ROADMAP.md`; validate against OpenAI usage data.
+- **Pricing and usage caps** — See `../engineering/TODO-ROADMAP.md`; validate against OpenAI usage data.
 - **Product backlog** — Slide picker / skip slides, card format preferences, etc.
 
 ## Success Criteria
