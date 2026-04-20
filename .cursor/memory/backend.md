@@ -143,4 +143,22 @@ Deck status values used in code: `"draft"`, `"uploaded"`, `"generating"`, `"read
 - `backend/src/lib/errors.ts`
 
 - **Status**: ANKIFY-001 complete.
-- **Next**: ANKIFY-002 (duplicate deck names) or ANKIFY-003 (upload progress).
+
+---
+
+## [2026-04-19] — ANKIFY-002 shipped: duplicate deck names
+
+### Schema change
+- Added `@@unique([userId, name])` to Deck model in Prisma schema
+- Migration: `20260419_unique_deck_name_per_user/migration.sql` — renames existing duplicates (appends " (N)") then adds unique index
+
+### Backend logic (`routes/decks.ts`)
+- **Pre-check**: Before creating a deck, queries for existing deck with same (userId, name). Returns 409 with `code: "DUPLICATE_DECK_NAME"` and message "You already have a deck named X"
+- **Safety net**: Catches Prisma `P2002` unique constraint violation in the create call (race condition guard) — same 409 response
+- Imported `Prisma` from `@prisma/client` for typed error handling
+
+### Frontend
+- No changes needed — the 409 error is caught by `apiErrorMiddleware` and shown as a toast automatically
+
+- **Status**: ANKIFY-002 complete.
+- **Next**: ANKIFY-003 (upload progress) or ANKIFY-004 (image cards).

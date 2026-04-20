@@ -25,7 +25,7 @@ Active work tracker. One markdown file per ticket. Convention: `ANKIFY-<number>-
 | Ticket | Title | Status |
 |--------|-------|--------|
 | [ANKIFY-001](engineering/tickets/ANKIFY-001-error-feedback.md) | Surface error feedback to users | `shipped` |
-| [ANKIFY-002](engineering/tickets/ANKIFY-002-duplicate-deck-names.md) | Prevent duplicate deck names | `open` |
+| [ANKIFY-002](engineering/tickets/ANKIFY-002-duplicate-deck-names.md) | Prevent duplicate deck names | `shipped` |
 | [ANKIFY-003](engineering/tickets/ANKIFY-003-upload-progress-flow.md) | Upload-to-complete progress flow | `open` |
 | [ANKIFY-004](engineering/tickets/ANKIFY-004-image-cards-missing-images.md) | Image cards missing images | `open` |
 

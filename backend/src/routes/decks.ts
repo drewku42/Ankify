@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import fs from "fs/promises";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { requireAuth } from "../middleware/auth";
 import { pdfUpload } from "../middleware/upload";
@@ -26,6 +27,18 @@ router.post(
     const { name } = req.body;
     if (!name) {
       res.status(400).json({ error: "Deck name is required", code: "VALIDATION_ERROR" });
+      return;
+    }
+
+    const existing = await prisma.deck.findFirst({
+      where: { userId: req.authUser!.id, name },
+      select: { id: true },
+    });
+    if (existing) {
+      res.status(409).json({
+        error: `You already have a deck named "${name}"`,
+        code: "DUPLICATE_DECK_NAME",
+      });
       return;
     }
 
@@ -57,6 +70,18 @@ router.post(
       });
 
       res.status(201).json({ deck });
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === "P2002"
+      ) {
+        res.status(409).json({
+          error: `You already have a deck named "${name}"`,
+          code: "DUPLICATE_DECK_NAME",
+        });
+        return;
+      }
+      throw err;
     } finally {
       if (req.file?.path) {
         fs.unlink(req.file.path).catch(() => {});

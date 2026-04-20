@@ -3,11 +3,11 @@
 
 | Field        | Value              |
 | ------------ | ------------------ |
-| **Status**   | `open`             |
+| **Status**   | `shipped`          |
 | **Priority** | `urgent`           |
 | **Touches**  | backend · frontend |
 | **Opened**   | 2026-04-19         |
-| **Shipped**  | —                  |
+| **Shipped**  | 2026-04-19         |
 
 
 ## Original issue
