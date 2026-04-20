@@ -4,6 +4,8 @@ Handoff notes for the next session. Last updated when picking up after shipping 
 
 **Technical onboarding (env, architecture, gotchas):** [`AGENT.md`](AGENT.md).
 
+**v1 generation scope:** Shipped product generates **basic (front/back) cards only**. Cloze, image-heavy card types, and user-tunable “basic vs cloze mix” are **post-v1** until we intentionally expand the pipeline (see [`BUSINESS_CONTEXT.md`](../business/BUSINESS_CONTEXT.md), ANKIFY-004 notes).
+
 ---
 
 ## Product backlog (from earlier planning)
@@ -11,7 +13,7 @@ Handoff notes for the next session. Last updated when picking up after shipping 
 ### High impact next
 
 1. **Slide skip / select UI** — Preview PDF slide thumbnails before generation; deselect title slides, credits, appendix, etc. Saves API cost and latency on large decks.
-2. **Card format preferences** — Let users describe or exemplify preferred card style (length, cloze vs basic mix, tone). Feed into prompt so generation matches how they study.
+2. **Card format preferences** — *Post-v1.* Let users describe or exemplify preferred card style (length, tone, density). **v1 stays basic-only;** a future iteration could add cloze/mix options once those card types are supported again in product and schema.
 
 ### Deferred until signal
 

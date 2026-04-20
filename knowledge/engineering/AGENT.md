@@ -6,7 +6,7 @@ Read this before changing code or deploying. Product name is **Ankify** (the rep
 
 ## What this project is
 
-Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated Anki cards** (basic, cloze, image), edit in-app, download **`.apkg`** for Anki Desktop.
+Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated Anki cards** (v1: **basic** front/back; cloze/image deferred), edit in-app, download **`.apkg`** for Anki Desktop.
 
 - **Vision path:** PDF → images per page → **GPT-4o** (LangChain, structured output) → cards → **genanki** export.
 - **Auth:** Google OAuth + JWT. Optional **dev login** (`POST /auth/dev-login`) only when `NODE_ENV=development`.
@@ -102,6 +102,9 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 3. **OAuth redirect:** Google Console must list `**https://api.ankify.io/auth/google/callback`**; frontend needs `**frontend/vercel.json`** SPA rewrites so `**/auth/callback**` serves `index.html`.
 4. **Long generation:** Many batches can run **minutes**; Nginx `**proxy_read_timeout`** must be high enough; Node may need an explicit long timeout on `fetch` to AI if failures persist.
 5. **PM2:** After `.env` changes: `**pm2 restart <name> --update-env`**. Ensure `**pm2 save`** + `**pm2 startup**` for reboot survival.
+6. **Prisma + TypeScript on EC2:** After **any** `schema.prisma` change or route change that touches the DB, production must run **`prisma migrate deploy`**, **`prisma generate`**, and **`npm run build`**, then **restart PM2** — not just `git pull` + restart. Otherwise you get **column / unknown argument** errors while local works. Full order of operations: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md).
+7. **Dashboard vs raw SQL:** `GET /decks` only returns decks for **`userId` = JWT user**. A naked `SELECT * FROM Deck` in MySQL shows **all users** — not a sync bug.
+8. **`npm ci` on server:** Requires a committed **`package-lock.json`**. The repo **`deploy/deploy.sh`** runs the full backend pipeline; prefer it over ad-hoc restarts.
 
 ---
 
@@ -125,6 +128,7 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 | `[NEXT_SESSION.md](NEXT_SESSION.md)`                        | Shorter handoff duplicate of roadmap + pricing       |
 | `[anki/](anki/)`                                            | Anki / `.apkg` technical reference                   |
 | `[Knowledge Index](../INDEX.md)`                             | Master table of contents for all docs                |
+| `[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)`               | Pre-merge + EC2 + Vercel steps; Prisma/`dist`/PM2     |
 
 
 ---

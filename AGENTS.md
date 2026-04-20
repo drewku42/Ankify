@@ -21,6 +21,7 @@ Web app that converts lecture PDFs into Anki flashcard decks using GPT-4o Vision
 | Full product context, users, risks, constraints | [`knowledge/business/BUSINESS_CONTEXT.md`](knowledge/business/BUSINESS_CONTEXT.md) |
 | All knowledge docs (master index) | [`knowledge/INDEX.md`](knowledge/INDEX.md) |
 | Env vars, deploy, architecture, production gotchas | [`knowledge/engineering/AGENT.md`](knowledge/engineering/AGENT.md) |
+| **Release / prod deploy checklist** (Prisma, `dist/`, PM2) | [`knowledge/engineering/RELEASE_CHECKLIST.md`](knowledge/engineering/RELEASE_CHECKLIST.md) |
 | Current tickets and sprint state | [`knowledge/engineering/tickets/`](knowledge/engineering/tickets/) |
 | Architecture decision records | [`knowledge/engineering/adr/`](knowledge/engineering/adr/) |
 | Roadmap and backlog | [`knowledge/engineering/TODO-ROADMAP.md`](knowledge/engineering/TODO-ROADMAP.md) |

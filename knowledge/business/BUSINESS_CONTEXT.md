@@ -4,7 +4,7 @@
 
 ## What We're Building
 
-A web app that converts PDF lecture slides into ready-to-import Anki flashcard decks using AI (GPT-4o Vision). Medical and PA students upload a lecture PDF, the app renders slides to images, generates flashcards (basic, cloze, image) with structured outputs, and lets users review/edit cards before exporting a `.apkg` file they can import into Anki.
+A web app that converts PDF lecture slides into ready-to-import Anki flashcard decks using AI (GPT-4o Vision). Medical and PA students upload a lecture PDF, the app renders slides to images, generates **basic (front/back) flashcards** with structured outputs, and lets users review/edit cards before exporting a `.apkg` file they can import into Anki. **Cloze and image card types are deferred** (image cards require PDF image extraction + media pipeline; see ticket history / roadmap).
 
 ## Who Uses It & When
 
@@ -21,56 +21,62 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 1. User logs in (Google OAuth; dev login available locally)
 2. User uploads a PDF of lecture slides
 3. App renders slides and sends images to GPT-4o Vision (not plain-text OCR-only)
-4. GPT-4o generates flashcards (basic, cloze deletion, image cards)
+4. GPT-4o generates **basic** flashcards (question/answer HTML); cloze/image deferred for v1
 5. User reviews and edits cards in-app (Notion-clean UI, Anki-familiar patterns)
 6. Cards are associated with their source PDF page
 7. User exports deck as `.apkg` file
 8. User imports into Anki and studies
 
-**UX during generation:** Loading skeleton while cards are being generated (not streaming).
+**UX during generation:** After upload, user lands on the deck page; **status polling** (`uploaded` → `generating` → `ready` / `error`) with visible generating state; not streaming per-card.
 
 ## Data Flow
 
 ### Sources (data in)
 
-| Data Element       | Source         | Notes                                       |
-| ------------------ | -------------- | ------------------------------------------- |
-| PDF lecture slides | User upload    | Clean/blank slides for v1; no size limit  |
-| Slide content      | Vision pipeline | Images per page → GPT-4o Vision             |
-| AI-generated cards | OpenAI GPT-4o  | Basic, cloze, and image card types          |
-| User edits         | In-app editor  | Users review and modify generated cards     |
-| User identity      | Google OAuth   | Authentication                              |
+
+| Data Element       | Source          | Notes                                              |
+| ------------------ | --------------- | -------------------------------------------------- |
+| PDF lecture slides | User upload     | Clean/blank slides for v1; no size limit           |
+| Slide content      | Vision pipeline | Images per page → GPT-4o Vision                    |
+| AI-generated cards | OpenAI GPT-4o   | **v1:** basic front/back only; cloze/image backlog |
+| User edits         | In-app editor   | Users review and modify generated cards            |
+| User identity      | Google OAuth    | Authentication                                     |
+
 
 ### Destinations (data out)
 
-| Data Element             | Destination   | Format           | Notes                                      |
-| ------------------------ | ------------- | ---------------- | ------------------------------------------ |
-| Uploaded PDFs            | Object storage or local disk | Binary | **Prod:** filesystem under `STORAGE_LOCAL_DIR`; **optional dev:** S3-compatible (LocalStack). AWS S3 path supported when `STORAGE_DRIVER=s3`. |
-| User accounts            | MySQL         | Structured       | Persisted user profiles                    |
-| Decks & cards            | MySQL         | Structured       | Persisted between sessions                 |
-| Card ↔ source page links | MySQL         | Structured       | Associate each card with its PDF page      |
-| Exported decks           | User download | `.apkg` (SQLite) | Generated server-side (genanki, AI server) |
+
+| Data Element             | Destination                  | Format           | Notes                                                                                                                                         |
+| ------------------------ | ---------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uploaded PDFs            | Object storage or local disk | Binary           | **Prod:** filesystem under `STORAGE_LOCAL_DIR`; **optional dev:** S3-compatible (LocalStack). AWS S3 path supported when `STORAGE_DRIVER=s3`. |
+| User accounts            | MySQL                        | Structured       | Persisted user profiles                                                                                                                       |
+| Decks & cards            | MySQL                        | Structured       | Persisted between sessions                                                                                                                    |
+| Card ↔ source page links | MySQL                        | Structured       | Associate each card with its PDF page                                                                                                         |
+| Exported decks           | User download                | `.apkg` (SQLite) | Generated server-side (genanki, AI server)                                                                                                    |
+
 
 ## System Map (as shipped — v1)
 
-| System                  | Purpose                                                                                                           | Direction   |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------- |
-| **Vercel**              | React + Vite frontend (`ankify.io`)                                                                               | User-facing |
+
+| System                  | Purpose                                                                                                                                | Direction   |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| **Vercel**              | React + Vite frontend (`ankify.io`)                                                                                                    | User-facing |
 | **EC2**                 | Express backend (auth, CRUD, uploads, proxy to AI) + FastAPI AI server (PDF → cards → `.apkg`) + MySQL, behind Nginx (`api.ankify.io`) | In/Out      |
-| **Local filesystem**    | PDF and intermediate storage on EC2 (`STORAGE_DRIVER=local`)                                                    | In/Out      |
-| **Google OAuth**        | Authentication                                                                                                    | In          |
-| **OpenAI API (GPT-4o)** | Vision for slide analysis and card generation                                                                     | Out → In    |
+| **Local filesystem**    | PDF and intermediate storage on EC2 (`STORAGE_DRIVER=local`)                                                                           | In/Out      |
+| **Google OAuth**        | Authentication                                                                                                                         | In          |
+| **OpenAI API (GPT-4o)** | Vision for slide analysis and card generation                                                                                          | Out → In    |
+
 
 **Local development:** Docker Compose runs MySQL; optional **LocalStack** profile emulates S3 for parity with `STORAGE_DRIVER=s3`. **Local dev default** remains filesystem storage without LocalStack.
 
 ## Where This Will Break
 
 1. **AI cost scaling** — Medium severity. Organic growth among students can raise spend; pricing and caps are a follow-on concern (see `../engineering/TODO-ROADMAP.md`).
-2. **Card quality** — **High severity. This is the #1 failure mode.** If AI-generated cards are bad, users spend as long editing as they would creating from scratch, and the product is dead. Prompt engineering and card type selection logic are critical.
+2. **Card quality** — **High severity. This is the #1 failure mode.** If AI-generated cards are bad, users spend as long editing as they would creating from scratch, and the product is dead. Prompt engineering matters; **v1 does not vary card “type” in product or DB** (basic only).
 3. **PDF extraction quality** — Medium severity. Medical slides can be messy (images, tables, multi-column). v1 assumes clean slides; iterate from real usage.
 4. **Processing time** — Medium severity. Large decks can take many minutes; loading skeleton in UI; Nginx/timeouts must allow long AI calls.
 5. **OpenAI downtime/latency spikes** — Low severity. Add fallback provider later; not expected to be frequent.
-6. **`.apkg` generation reliability** — Medium severity. `.apkg` is SQLite with a specific schema. If export is broken, the entire value prop is broken. Test across Anki versions.
+6. `**.apkg` generation reliability** — Medium severity. `.apkg` is SQLite with a specific schema. If export is broken, the entire value prop is broken. Test across Anki versions.
 7. **Annotation detection (future)** — Deferred. Detecting user markup is a future paid feature. v1 is clean slides only.
 
 ## Architecture (shipped)
@@ -109,15 +115,17 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 
 ## Resolved Technical Decisions
 
-| Question               | Decision                                                                                                                                                           | Rationale                                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| **Hosting (v1)**       | Vercel (frontend) + single EC2 (API + AI + MySQL) + Nginx                                                                                                          | Simplicity and speed to ship; not ECS/Lambda as originally sketched.                                      |
-| **Database**           | MySQL                                                                                                                                                              | Relational model; files not stored in DB.                                                                 |
-| **PDF processing**     | `pdf2image` / poppler → GPT-4o Vision                                                                                                                            | Preserves visual context (layout, diagrams).                                                              |
-| **`.apkg` generation** | `genanki` (Python) on the AI server                                                                                                                              | Mature library; cloze + media + templates.                                                                |
-| **Card generation**    | LangChain + structured outputs → typed card payloads                                                                                                             | Parseable, validated outputs.                                                                             |
-| **Image handling**     | Images from slides packed into `.apkg` with media mapping                                                                                                        | Anki Legacy 2 expectations (see `../engineering/anki/`).                                                            |
-| **Local S3 testing**   | LocalStack (optional Docker profile) + `STORAGE_DRIVER=s3`                                                                                                       | Parity with S3 API without AWS in dev.                                                                    |
+
+| Question               | Decision                                                   | Rationale                                                            |
+| ---------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Hosting (v1)**       | Vercel (frontend) + single EC2 (API + AI + MySQL) + Nginx  | Simplicity and speed to ship; not ECS/Lambda as originally sketched. |
+| **Database**           | MySQL                                                      | Relational model; files not stored in DB.                            |
+| **PDF processing**     | `pdf2image` / poppler → GPT-4o Vision                      | Preserves visual context (layout, diagrams).                         |
+| `**.apkg` generation** | `genanki` (Python) on the AI server                        | Mature library; cloze + media + templates.                           |
+| **Card generation**    | LangChain + structured outputs → typed card payloads       | Parseable, validated outputs.                                        |
+| **Image handling**     | Images from slides packed into `.apkg` with media mapping  | Anki Legacy 2 expectations (see `../engineering/anki/`).             |
+| **Local S3 testing**   | LocalStack (optional Docker profile) + `STORAGE_DRIVER=s3` | Parity with S3 API without AWS in dev.                               |
+
 
 ## Open Questions (post–v1)
 
@@ -139,3 +147,4 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 - Multiple export formats
 - Fallback AI provider
 - Batch upload (multiple lectures at once)
+

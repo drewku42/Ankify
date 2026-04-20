@@ -15,6 +15,7 @@ The "second brain" for all organizational knowledge. If it's been decided, docum
 | Document | What's in it |
 |----------|-------------|
 | [AGENT.md](engineering/AGENT.md) | Zero-context agent onboarding — architecture, env vars, deploy, production gotchas, local dev setup |
+| [RELEASE_CHECKLIST.md](engineering/RELEASE_CHECKLIST.md) | **Feature release / prod deploy** — Prisma migrations, `prisma generate`, `npm run build`, PM2, verification |
 | [TODO-ROADMAP.md](engineering/TODO-ROADMAP.md) | Product backlog, pricing/economics discussion, ops reminders |
 | [NEXT_SESSION.md](engineering/NEXT_SESSION.md) | Handoff notes — overlaps with roadmap, kept for session continuity |
 
@@ -26,8 +27,8 @@ Active work tracker. One markdown file per ticket. Convention: `ANKIFY-<number>-
 |--------|-------|--------|
 | [ANKIFY-001](engineering/tickets/ANKIFY-001-error-feedback.md) | Surface error feedback to users | `shipped` |
 | [ANKIFY-002](engineering/tickets/ANKIFY-002-duplicate-deck-names.md) | Prevent duplicate deck names | `shipped` |
-| [ANKIFY-003](engineering/tickets/ANKIFY-003-upload-progress-flow.md) | Upload-to-complete progress flow | `open` |
-| [ANKIFY-004](engineering/tickets/ANKIFY-004-image-cards-missing-images.md) | Image cards missing images | `open` |
+| [ANKIFY-003](engineering/tickets/ANKIFY-003-upload-progress-flow.md) | Upload-to-complete progress flow | `shipped` |
+| [ANKIFY-004](engineering/tickets/ANKIFY-004-image-cards-missing-images.md) | Image cards / card types (removed for v1) | `cancelled` |
 
 Template: [tickets/_TEMPLATE.md](engineering/tickets/_TEMPLATE.md)
 

@@ -60,3 +60,14 @@
 - **Impact**: All personas. Convention: every feature/bug gets a ticket before work starts; every architectural change gets an ADR.
 - **Next**: Sprint 0 tickets are written and ready. CEO to greenlight work.
 - **Open**: None.
+
+---
+
+## [2026-04-19 / 20 — Sprint 0 closed; v1 scope narrowed]
+
+- **Shipped:** ANKIFY-001 (toasts / errors), ANKIFY-002 (unique deck names), ANKIFY-003 (upload → deck page + polling + status UX).
+- **Cancelled / re-scoped:** ANKIFY-004 — image (and cloze) card types **removed for v1**; product is **basic cards only** until a future epic covers PDF image extraction + media + Anki media map. Ticket documents rationale and future options.
+- **Documentation added:** `knowledge/engineering/RELEASE_CHECKLIST.md` — Prisma + `dist/` + PM2 order so prod matches local.
+- **BUSINESS_CONTEXT** updated so v1 promise matches shipped product (no “three card types” in live scope).
+- **Next product focus:** backlog features from roadmap (streaming, audit trail, slide picker, pricing caps) — **stabilization sprint done**; prioritize by user feedback and cost.
+- **Open:** Consider **ADR-002** (“v1 basic-only cards”) if we want an immutable architecture/product record; optional.

@@ -1,6 +1,8 @@
 # Ankify — notes for next session
 
-**Infra, env vars, and deploy gotchas:** see [`AGENT.md`](AGENT.md) (zero-context agent onboarding). This file overlaps with [`TODO-ROADMAP.md`](TODO-ROADMAP.md); roadmap + ops live there in more detail.
+**Infra, env vars, and deploy gotchas:** see [`AGENT.md`](AGENT.md) (zero-context agent onboarding). **Release / prod deploy order (Prisma migrate → generate → `npm run build` → PM2):** [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) — use this to avoid “works locally, breaks on EC2.”
+
+This file overlaps with [`TODO-ROADMAP.md`](TODO-ROADMAP.md); roadmap + ops live there in more detail.
 
 ## Post-v1 / roadmap features (from prior planning)
 
@@ -26,6 +28,13 @@
 ## Card generation behavior (reference)
 
 - **Sequential batches** of slides (batch size 10), one async LLM call per batch — not parallel batches. See `ai-server/app/services/card_generator.py`.
+- **v1 output:** basic Q/A cards only (no cloze/image in schema or exporter).
+
+## Sprint 0 outcome (2026-04)
+
+- **ANKIFY-001** (error feedback), **002** (duplicate deck names), **003** (upload → deck status / polling) **shipped**.
+- **ANKIFY-004** (image cards) **cancelled** for v1; scope narrowed to basic cards — see [`BUSINESS_CONTEXT.md`](../business/BUSINESS_CONTEXT.md) and ticket notes.
+- **Prod lesson:** EC2 must run full backend pipeline after schema or route changes (`deploy/deploy.sh`), not `git pull` + PM2 alone.
 
 ---
 
