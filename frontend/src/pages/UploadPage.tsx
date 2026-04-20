@@ -1,12 +1,11 @@
 import { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCreateDeckMutation, useGenerateDeckMutation } from "@/store/api";
+import { useCreateDeckMutation } from "@/store/api";
 
 export default function UploadPage() {
   const navigate = useNavigate();
   const [createDeck] = useCreateDeckMutation();
-  const [generateDeck] = useGenerateDeckMutation();
 
   const [name, setName] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -64,10 +63,8 @@ export default function UploadPage() {
 
     try {
       const result = await createDeck({ name: name.trim(), file }).unwrap();
-      await generateDeck(result.deck.id).unwrap();
       navigate(`/decks/${result.deck.id}`);
     } catch {
-      // API errors surfaced by apiErrorMiddleware
       setIsCreating(false);
     }
   };
@@ -152,7 +149,7 @@ export default function UploadPage() {
         >
           {isCreating ? (
             <>
-              <span className="spinner spinner--sm" /> Generating cards...
+              <span className="spinner spinner--sm" /> Uploading...
             </>
           ) : (
             "Generate Anki Cards"

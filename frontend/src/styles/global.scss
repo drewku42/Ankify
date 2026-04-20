@@ -726,6 +726,21 @@ button {
     font-size: 0.9375rem;
   }
 
+  &__error {
+    text-align: center;
+    padding: 2rem;
+    background: #fff5f5;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    color: var(--color-danger, #dc2626);
+
+    p {
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+  }
+
   &__count {
     font-size: 0.875rem;
     color: var(--color-text-secondary);

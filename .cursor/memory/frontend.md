@@ -153,3 +153,32 @@ src/
 - API errors caught by middleware — no manual parsing
 
 - **Next**: ANKIFY-002 (duplicate deck names) or ANKIFY-003 (upload progress).
+
+---
+
+## [2026-04-19] — ANKIFY-003 shipped: upload-to-complete flow
+
+### What changed
+
+#### UploadPage
+- **No longer calls `generateDeck`**. Upload creates the deck (status `uploaded`) and immediately navigates to `/decks/:id`.
+- Button text during submit changed from "Generating cards..." to "Uploading..." since generation is no longer awaited here.
+- `useGenerateDeckMutation` import removed — page only uses `useCreateDeckMutation`.
+
+#### DeckPage — generation lifecycle owner
+- **Auto-triggers generation**: `useEffect` watches for `status === "uploaded"` + `sourceFileKey` present → calls `generateDeck(id)`. Ref guard prevents double-fire.
+- **Polls for status**: `useGetDeckQuery` with `pollingInterval: 3000` enabled while deck status is `generating` or `uploaded`. Polling stops once status flips to `ready` or `error`.
+- **Status transition toasts**: Tracks `prevStatus` ref. `generating → ready` = success toast. `generating → error` = error toast.
+- **Error state UI**: New `deck-page__error` block shown when status is `error` with a "Try Again" button to re-trigger generation.
+- **Hides card list / count during generation** — only the generating indicator is visible while in-flight.
+- **Regenerate button hidden during generation** to prevent double-fires.
+
+#### SCSS
+- Added `&__error` styles to `.deck-page` block (red background, danger color, centered text).
+
+### Architecture
+- Backend is unchanged — `POST /generate/deck/:deckId` is still synchronous (sets status generating → does work → sets ready/error).
+- The frontend no longer blocks on that long request. Instead, the mutation fires and DeckPage polls `GET /decks/:id` to observe the status transition.
+- If the user navigates away mid-generation and comes back, polling resumes because the deck status is still `generating`.
+
+- **Next**: ANKIFY-004 (image cards don't include images).

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -98,19 +98,58 @@ function CardEditor({
   );
 }
 
+const POLL_INTERVAL = 3000;
+
 export default function DeckPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data, isLoading, refetch } = useGetDeckQuery(id!);
-  const [generateDeck, { isLoading: isGenerating }] =
-    useGenerateDeckMutation();
+
+  const [generateDeck] = useGenerateDeckMutation();
   const [deleteCard] = useDeleteCardMutation();
   const [deleteDeck] = useDeleteDeckMutation();
   const [editingCard, setEditingCard] = useState<Card | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [polling, setPolling] = useState(false);
+
+  const generationTriggered = useRef(false);
+
+  const { data, isLoading } = useGetDeckQuery(id!, {
+    pollingInterval: polling ? POLL_INTERVAL : 0,
+  });
 
   const deck = data?.deck;
   const cards = deck?.cards ?? [];
+  const status = deck?.status;
+
+  const isGenerating = status === "generating" || status === "uploaded";
+
+  // Auto-trigger generation when landing on a deck with status "uploaded"
+  useEffect(() => {
+    if (status === "uploaded" && deck?.sourceFileKey && !generationTriggered.current) {
+      generationTriggered.current = true;
+      generateDeck(id!).catch(() => {});
+    }
+  }, [status, deck?.sourceFileKey, id, generateDeck]);
+
+  // Enable/disable polling based on deck status
+  useEffect(() => {
+    setPolling(isGenerating);
+  }, [isGenerating]);
+
+  // Toast on status transitions
+  const prevStatus = useRef<string>();
+  useEffect(() => {
+    if (!status || !prevStatus.current) {
+      prevStatus.current = status;
+      return;
+    }
+    if (prevStatus.current === "generating" && status === "ready") {
+      toast.success("Cards generated successfully!");
+    } else if (prevStatus.current === "generating" && status === "error") {
+      toast.error("Card generation failed. Please try again.");
+    }
+    prevStatus.current = status;
+  }, [status]);
 
   const handleExport = async () => {
     if (!id) return;
@@ -141,12 +180,8 @@ export default function DeckPage() {
     if (!id) return;
     if (!confirm("Regenerate all cards? This will replace existing cards."))
       return;
-    try {
-      await generateDeck(id).unwrap();
-      refetch();
-    } catch {
-      // Error toast handled by apiErrorMiddleware
-    }
+    generationTriggered.current = true;
+    generateDeck(id).catch(() => {});
   };
 
   const handleDeleteDeck = async () => {
@@ -202,19 +237,18 @@ export default function DeckPage() {
           )}
         </div>
         <div className="deck-page__actions">
-          {deck.sourceFileKey && (
+          {deck.sourceFileKey && !isGenerating && (
             <button
               className="btn btn--ghost"
               onClick={handleRegenerate}
-              disabled={isGenerating}
             >
-              {isGenerating ? "Regenerating..." : "Regenerate"}
+              Regenerate
             </button>
           )}
           <button
             className="btn btn--primary"
             onClick={handleExport}
-            disabled={isExporting || cards.length === 0}
+            disabled={isExporting || cards.length === 0 || isGenerating}
           >
             {isExporting ? "Exporting..." : "Export .apkg"}
           </button>
@@ -233,62 +267,77 @@ export default function DeckPage() {
         </div>
       )}
 
-      <p className="deck-page__count">
-        {cards.length} {cards.length === 1 ? "card" : "cards"}
-      </p>
+      {status === "error" && cards.length === 0 && (
+        <div className="deck-page__error">
+          <p>Card generation failed.</p>
+          {deck.sourceFileKey && (
+            <button className="btn btn--primary" onClick={handleRegenerate}>
+              Try Again
+            </button>
+          )}
+        </div>
+      )}
 
-      {cards.length === 0 && !isGenerating ? (
+      {!isGenerating && (
+        <p className="deck-page__count">
+          {cards.length} {cards.length === 1 ? "card" : "cards"}
+        </p>
+      )}
+
+      {cards.length === 0 && !isGenerating && status !== "error" ? (
         <div className="deck-page__empty">
           <p>No cards yet. Upload a PDF and generate cards to get started.</p>
         </div>
       ) : (
-        <div className="card-list">
-          {cards.map((card, index) => (
-            <div key={card.id} className="card-item">
-              <div className="card-item__number">{index + 1}</div>
-              <div className="card-item__content">
-                <div className="card-item__front">
-                  <span className="card-item__label">Q</span>
-                  <span
-                    dangerouslySetInnerHTML={{ __html: card.front }}
-                  />
+        !isGenerating && (
+          <div className="card-list">
+            {cards.map((card, index) => (
+              <div key={card.id} className="card-item">
+                <div className="card-item__number">{index + 1}</div>
+                <div className="card-item__content">
+                  <div className="card-item__front">
+                    <span className="card-item__label">Q</span>
+                    <span
+                      dangerouslySetInnerHTML={{ __html: card.front }}
+                    />
+                  </div>
+                  <div className="card-item__back">
+                    <span className="card-item__label">A</span>
+                    <span
+                      dangerouslySetInnerHTML={{ __html: card.back }}
+                    />
+                  </div>
                 </div>
-                <div className="card-item__back">
-                  <span className="card-item__label">A</span>
-                  <span
-                    dangerouslySetInnerHTML={{ __html: card.back }}
-                  />
+                <div className="card-item__meta">
+                  <CardTypeIcon type={card.cardType} />
+                  {card.sourcePageNum && (
+                    <span className="card-item__page">
+                      p.{card.sourcePageNum}
+                    </span>
+                  )}
+                </div>
+                <div className="card-item__actions">
+                  <button
+                    className="btn btn--ghost btn--sm"
+                    onClick={() => setEditingCard(card)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn--ghost btn--sm btn--danger-text"
+                    onClick={() => {
+                      if (confirm("Delete this card?")) {
+                        deleteCard({ deckId: id!, cardId: card.id });
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
-              <div className="card-item__meta">
-                <CardTypeIcon type={card.cardType} />
-                {card.sourcePageNum && (
-                  <span className="card-item__page">
-                    p.{card.sourcePageNum}
-                  </span>
-                )}
-              </div>
-              <div className="card-item__actions">
-                <button
-                  className="btn btn--ghost btn--sm"
-                  onClick={() => setEditingCard(card)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn--ghost btn--sm btn--danger-text"
-                  onClick={() => {
-                    if (confirm("Delete this card?")) {
-                      deleteCard({ deckId: id!, cardId: card.id });
-                    }
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )
       )}
 
       {editingCard && (
