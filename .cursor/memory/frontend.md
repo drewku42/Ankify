@@ -182,3 +182,21 @@ src/
 - If the user navigates away mid-generation and comes back, polling resumes because the deck status is still `generating`.
 
 - **Next**: ANKIFY-004 (image cards don't include images).
+
+---
+
+## [2026-04-19] — Card types removed (ANKIFY-004 cancelled)
+
+### What changed
+- **Removed `CardTypeIcon`** component from `DeckPage.tsx` — no more type badges on cards or in the editor
+- **Removed `cardType`** from `Card` interface in `api.ts` and from `updateCard` mutation params
+- **Removed `.card-type` SCSS** — the `--basic`, `--cloze`, `--image` badge styles
+- All cards are now basic front/back — no type distinction in the UI
+
+### Why
+Image card support requires a full pipeline (PDF image extraction → storage → media attachment → rendering) that's too complex for v1. Cloze adds AI complexity. Simplifying to basic Q/A for v1.
+
+### Still in schema
+- `CardMedia` model still exists in Prisma — kept for potential future media features but nothing creates media rows currently.
+
+- **Status**: Sprint 0 complete. All 4 urgent tickets resolved (3 shipped, 1 cancelled).

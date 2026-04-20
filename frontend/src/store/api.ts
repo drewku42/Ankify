@@ -4,7 +4,6 @@ import { API_URL } from "@/config";
 export interface Card {
   id: string;
   deckId: string;
-  cardType: string;
   front: string;
   back: string;
   sourcePageNum: number | null;
@@ -111,7 +110,7 @@ export const api = createApi({
 
     updateCard: builder.mutation<
       { card: Card },
-      { deckId: string; cardId: string; front?: string; back?: string; cardType?: string }
+      { deckId: string; cardId: string; front?: string; back?: string }
     >({
       query: ({ deckId, cardId, ...body }) => ({
         url: `/decks/${deckId}/cards/${cardId}`,

@@ -6,7 +6,6 @@ import { getFile } from "../lib/storage";
 import { asyncHandler } from "../lib/errors";
 
 interface AiCard {
-  card_type: string;
   front: string;
   back: string;
   source_page: number;
@@ -72,7 +71,6 @@ router.post("/deck/:deckId", asyncHandler(async (req: Request, res: Response) =>
 
     const cardData = generatedCards.map((card, index) => ({
       deckId: deck.id,
-      cardType: card.card_type,
       front: card.front,
       back: card.back,
       sourcePageNum: card.source_page,
@@ -167,7 +165,6 @@ router.post("/export/:deckId", asyncHandler(async (req: Request, res: Response) 
     const exportPayload = {
       deck_name: deck.name,
       cards: deck.cards.map((card) => ({
-        card_type: card.cardType,
         front: card.front,
         back: card.back,
         source_page: card.sourcePageNum || 0,

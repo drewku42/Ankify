@@ -869,28 +869,6 @@ button {
   }
 }
 
-.card-type {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  padding: 0.0625rem 0.375rem;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-
-  &--basic {
-    background: var(--color-bg-secondary);
-    color: var(--color-text-secondary);
-  }
-  &--cloze {
-    background: #f3e8ff;
-    color: #7c3aed;
-  }
-  &--image {
-    background: #fef3e2;
-    color: var(--color-warning);
-  }
-}
-
 // ======== Card Editor Modal ========
 
 .card-editor-overlay {

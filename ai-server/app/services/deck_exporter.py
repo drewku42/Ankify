@@ -6,7 +6,7 @@ import tempfile
 
 import genanki
 
-from app.models import CardType, GeneratedCard
+from app.models import GeneratedCard
 
 logger = logging.getLogger(__name__)
 
@@ -31,58 +31,6 @@ BASIC_MODEL = genanki.Model(
         ".source { font-size: 12px; color: #999; margin-top: 16px; }",
 )
 
-CLOZE_MODEL = genanki.Model(
-    model_id=1607392320,
-    name="Ankify Cloze",
-    fields=[
-        {"name": "Text"},
-        {"name": "Extra"},
-        {"name": "SourcePage"},
-    ],
-    templates=[
-        {
-            "name": "Cloze",
-            "qfmt": "{{cloze:Text}}",
-            "afmt": "{{cloze:Text}}<br>{{Extra}}"
-                    '{{#SourcePage}}<div class="source">p. {{SourcePage}}</div>{{/SourcePage}}',
-        },
-    ],
-    css=".card { font-family: arial; font-size: 20px; text-align: center; color: #333; "
-        "background-color: white; padding: 20px; }\n"
-        ".cloze { font-weight: bold; color: #2383e2; }\n"
-        ".source { font-size: 12px; color: #999; margin-top: 16px; }",
-    model_type=genanki.Model.CLOZE,
-)
-
-IMAGE_MODEL = genanki.Model(
-    model_id=1607392321,
-    name="Ankify Image",
-    fields=[
-        {"name": "Front"},
-        {"name": "Back"},
-        {"name": "Image"},
-        {"name": "SourcePage"},
-    ],
-    templates=[
-        {
-            "name": "Card 1",
-            "qfmt": "{{Front}}",
-            "afmt": '{{FrontSide}}<hr id="answer">{{Back}}'
-                    "{{#Image}}<br>{{Image}}{{/Image}}"
-                    '{{#SourcePage}}<div class="source">p. {{SourcePage}}</div>{{/SourcePage}}',
-        },
-    ],
-    css=".card { font-family: arial; font-size: 20px; text-align: center; color: #333; "
-        "background-color: white; padding: 20px; }\n"
-        ".card img { max-width: 100%; height: auto; }\n"
-        ".source { font-size: 12px; color: #999; margin-top: 16px; }",
-)
-
-
-def _has_valid_cloze(text: str) -> bool:
-    """Check if text contains valid Anki cloze syntax."""
-    return bool(re.search(r"\{\{c\d+::", text))
-
 
 def _sanitize_tags(tags: list[str]) -> list[str]:
     """Anki tags cannot contain spaces — replace with underscores."""
@@ -93,30 +41,6 @@ def _make_note(card: GeneratedCard) -> genanki.Note:
     """Convert a GeneratedCard into a genanki Note."""
     page_str = str(card.source_page) if card.source_page else ""
     tags = _sanitize_tags(card.tags or [])
-
-    if card.card_type == CardType.CLOZE:
-        if not _has_valid_cloze(card.front):
-            logger.warning(
-                "Cloze card missing cloze syntax, converting to basic: %s",
-                card.front[:80],
-            )
-            return genanki.Note(
-                model=BASIC_MODEL,
-                fields=[card.front, card.back, page_str],
-                tags=tags,
-            )
-        return genanki.Note(
-            model=CLOZE_MODEL,
-            fields=[card.front, card.back, page_str],
-            tags=tags,
-        )
-
-    if card.card_type == CardType.IMAGE:
-        return genanki.Note(
-            model=IMAGE_MODEL,
-            fields=[card.front, card.back, "", page_str],
-            tags=tags,
-        )
 
     return genanki.Note(
         model=BASIC_MODEL,

@@ -68,18 +68,12 @@ async def run_pipeline(pdf_path: str, max_pages: int | None = None, single_slide
     logger.info("Suggested title: %s", deck.title_suggestion)
     logger.info("Summary: %s", deck.summary)
 
-    # Print card breakdown
-    type_counts = {}
-    for card in deck.cards:
-        type_counts[card.card_type] = type_counts.get(card.card_type, 0) + 1
-    logger.info("Card types: %s", dict(type_counts))
-
     # Print first 3 cards as a sample
     logger.info("\n--- Sample Cards ---")
     for i, card in enumerate(deck.cards[:3]):
         logger.info(
-            "Card %d [%s] (p.%s):\n  Front: %s\n  Back: %s",
-            i + 1, card.card_type, card.source_page,
+            "Card %d (p.%s):\n  Front: %s\n  Back: %s",
+            i + 1, card.source_page,
             card.front[:120], card.back[:120],
         )
 

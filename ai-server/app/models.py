@@ -1,18 +1,9 @@
-from enum import Enum
-
 from pydantic import BaseModel, Field
-
-
-class CardType(str, Enum):
-    BASIC = "basic"
-    CLOZE = "cloze"
-    IMAGE = "image"
 
 
 class GeneratedCard(BaseModel):
     """A single flashcard generated from lecture slide content."""
 
-    card_type: CardType = Field(description="The type of Anki card to create")
     front: str = Field(description="Front side of the card (question/prompt). HTML content.")
     back: str = Field(description="Back side of the card (answer). HTML content.")
     source_page: int = Field(description="1-indexed page number this card was generated from")

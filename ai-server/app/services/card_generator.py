@@ -19,23 +19,8 @@ RULES:
    seeing the original slide.
 3. Use HTML formatting in card content: <b>bold</b> for key terms, <br> for line breaks,
    <ul>/<li> for lists.
-
-CARD TYPE SELECTION:
-- Use "basic" (front/back) for:
-  - Definitions and explanations
-  - Concept questions ("What is...", "Describe...", "Explain...")
-  - Comparisons ("How does X differ from Y?")
-
-- Use "cloze" for:
-  - Fill-in-the-blank on critical facts, numbers, or sequences
-  - Format the front field with Anki cloze syntax: {{c1::hidden text}}
-  - The back field should contain the complete text without cloze markers
-  - You can use multiple cloze deletions: {{c1::first}} and {{c2::second}}
-
-- Use "image" for:
-  - Cards where a diagram, chart, or visual from the slide IS the question or answer
-  - Set front to a text question about the visual
-  - Set back to the answer (the image will be attached separately by the system)
+4. Every card is a basic front/back card: the front is the question or prompt, the back is
+   the answer.
 
 QUALITY GUIDELINES:
 - Avoid trivial cards (e.g., "What is the title of this lecture?")

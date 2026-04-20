@@ -39,7 +39,6 @@ model Card {
   id            String      @id @default(uuid())
   deckId        String
   deck          Deck        @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  cardType      String
   front         String      @db.Text
   back          String      @db.Text
   sourcePageNum Int?

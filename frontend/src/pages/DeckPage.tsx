@@ -11,14 +11,6 @@ import {
 } from "@/store/api";
 import { API_URL } from "@/config";
 
-function CardTypeIcon({ type }: { type: string }) {
-  if (type === "cloze")
-    return <span className="card-type card-type--cloze">Cloze</span>;
-  if (type === "image")
-    return <span className="card-type card-type--image">Image</span>;
-  return <span className="card-type card-type--basic">Basic</span>;
-}
-
 function CardEditor({
   card,
   deckId,
@@ -52,7 +44,6 @@ function CardEditor({
       <div className="card-editor" onClick={(e) => e.stopPropagation()}>
         <div className="card-editor__header">
           <h3>Edit Card</h3>
-          <CardTypeIcon type={card.cardType} />
         </div>
 
         <label className="card-editor__label">
@@ -309,7 +300,6 @@ export default function DeckPage() {
                   </div>
                 </div>
                 <div className="card-item__meta">
-                  <CardTypeIcon type={card.cardType} />
                   {card.sourcePageNum && (
                     <span className="card-item__page">
                       p.{card.sourcePageNum}

@@ -7,7 +7,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.put("/:deckId/cards/:cardId", asyncHandler(async (req: Request, res: Response) => {
-  const { front, back, cardType } = req.body;
+  const { front, back } = req.body;
 
   const deck = await prisma.deck.findFirst({
     where: { id: req.params.deckId as string, userId: req.authUser!.id },
@@ -32,7 +32,6 @@ router.put("/:deckId/cards/:cardId", asyncHandler(async (req: Request, res: Resp
     data: {
       ...(front !== undefined && { front }),
       ...(back !== undefined && { back }),
-      ...(cardType !== undefined && { cardType }),
     },
     include: { media: true },
   });
