@@ -147,4 +147,9 @@ src/
 - Toast is NOT in Redux anymore — react-toastify manages its own state
 - `apiErrorMiddleware` still in the middleware chain but no longer imports from store
 
+### UploadPage cleanup
+- Removed inline `error` state and `{error && <p>}` element
+- Validation errors now use `toast.warning()` 
+- API errors caught by middleware — no manual parsing
+
 - **Next**: ANKIFY-002 (duplicate deck names) or ANKIFY-003 (upload progress).
