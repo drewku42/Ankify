@@ -819,6 +819,17 @@ button {
     color: var(--color-text-secondary);
   }
 
+  &__back-content {
+    ol, ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin-bottom: 0.125rem;
+    }
+  }
+
   &__label {
     flex-shrink: 0;
     width: 18px;

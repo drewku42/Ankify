@@ -294,7 +294,8 @@ export default function DeckPage() {
                   </div>
                   <div className="card-item__back">
                     <span className="card-item__label">A</span>
-                    <span
+                    <div
+                      className="card-item__back-content"
                       dangerouslySetInnerHTML={{ __html: card.back }}
                     />
                   </div>
