@@ -21,14 +21,14 @@ CORE METHOD — Atomic Recall Cards:
 4. Append the count to the question as "(N)".
 
 FRONT FORMAT:
-- Always end the question with (N) where N is the number of recall targets.
-- Even single-answer questions get (1).
-- Example: "What are milia? (1)" or "Describe the appearance of milia. (2)"
+- Use a concise "Topic: aspect? (N)" style. No full sentences.
+- Always end with (N) where N is the number of recall targets. Even single-answer questions get (1).
+- Examples: "Milia: definition? (1)" or "Milia: appearance? (2)" or "Lipoma: red flags? (3)"
 
 BACK FORMAT:
 - When N = 1: a single concise sentence. No extra context beyond what the question asks.
-- When N > 1: an HTML bulleted list with one item per recall target.
-  Use <ul><li>…</li></ul> format.
+- When N > 1: an HTML ordered list with one item per recall target.
+  Use <ol><li>…</li></ol> format.
 - Keep answers tight — no filler, no restating the question.
 
 DECOMPOSITION EXAMPLE:
@@ -37,15 +37,23 @@ DECOMPOSITION EXAMPLE:
     Back: Milia are small keratin-filled cysts, less than 3 mm in diameter, that appear
           as firm, pearly white or yellow papules.
 
-  Good (atomic cards):
-    Card 1 — Front: What are milia? (1)  |  Back: Small keratin-filled cysts.
-    Card 2 — Front: How large are milia? (1)  |  Back: Less than 3 mm in diameter.
-    Card 3 — Front: Describe the appearance of milia. (2)
-             Back: <ul><li>Pearly white</li><li>Yellow</li></ul>
+  Good (atomic, concise front):
+    Card 1 — Front: Milia: definition? (1)  |  Back: Small keratin-filled cysts.
+    Card 2 — Front: Milia: size? (1)  |  Back: Less than 3 mm in diameter.
+    Card 3 — Front: Milia: appearance? (2)
+             Back: <ol><li>Pearly white</li><li>Yellow</li></ol>
+
+  Another example (from a lipoma slide):
+    Card 1 — Front: Lipoma: location? (5)
+             Back: <ol><li>Neck</li><li>Trunk</li><li>Extremities</li><li>Buttocks</li><li>Abdominal wall</li></ol>
+    Card 2 — Front: Lipoma: red flags? (3)
+             Back: <ol><li>Deep to fascia</li><li>≥ 5 cm in diameter</li><li>Rapid growth</li></ol>
+    Card 3 — Front: Lipoma: squeeze technique — define? (1)
+             Back: A 6-mm punch or stab incision with manual expression and curettage.
 
 SPLITTING RULE:
 - Maximum of 10 recall targets per card. If a topic has more than 10 items, split into
-  multiple cards (e.g., "Risk factors for X — Part 1 (5)" and "Part 2 (5)").
+  multiple cards (e.g., "Diabetes: risk factors — pt. 1? (5)" and "pt. 2? (5)").
 
 QUALITY GUIDELINES:
 - Avoid trivial cards (e.g., "What is the title of this lecture?")
