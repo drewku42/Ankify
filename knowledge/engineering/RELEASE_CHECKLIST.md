@@ -32,7 +32,7 @@ bash /home/ubuntu/Ankify/deploy/deploy.sh
 
 What it does today: `git pull` → `backend/` `**npm ci**` → `**prisma migrate deploy**` → `**prisma generate**` → `**npm run build**` → `ai-server/` `**poetry install --no-root**` → `**pm2 restart all --update-env**`.
 
-If you **cannot** use the script, run the same steps **in that order** — do not skip `**prisma generate**` or `**npm run build**`.
+If you **cannot** use the script, run the same steps **in that order** — do not skip `**prisma generate`** or `**npm run build`**.
 
 ### After any Prisma schema change
 
@@ -41,7 +41,7 @@ If you **cannot** use the script, run the same steps **in that order** — do no
 | --------------------------- | ------------------------------------------------------------------------------------------- |
 | `npx prisma migrate deploy` | DB columns match migration history.                                                         |
 | `npx prisma generate`       | Node uses a client that matches the **current** schema (not an old `node_modules/.prisma`). |
-| `npm run build`             | `dist/` matches `**src/**` (e.g. `createMany` must not reference removed fields).           |
+| `npm run build`             | `dist/` matches `**src/`** (e.g. `createMany` must not reference removed fields).           |
 | `pm2 restart …`             | Running processes load the new `dist/` + new client.                                        |
 
 
