@@ -1,6 +1,7 @@
 import logging
 import time
 
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 
@@ -8,6 +9,39 @@ from app.config import settings
 from app.models import GeneratedDeck, SlideInput
 
 logger = logging.getLogger(__name__)
+
+MAX_OUTPUT_TOKENS = 16384
+TEMPERATURE = 0.3
+
+
+def _build_llm() -> BaseChatModel:
+    """Construct the vision LLM for the configured provider.
+
+    Both providers accept the same multimodal `image_url` data-URI content blocks
+    (LangChain normalizes them) and support `.with_structured_output()`.
+    """
+    provider = settings.llm_provider.lower()
+
+    if provider == "google":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+
+        return ChatGoogleGenerativeAI(
+            model=settings.gemini_model,
+            google_api_key=settings.google_api_key or None,
+            max_output_tokens=MAX_OUTPUT_TOKENS,
+            temperature=TEMPERATURE,
+        )
+
+    if provider == "openai":
+        return ChatOpenAI(
+            model=settings.openai_model,
+            api_key=settings.openai_api_key,
+            max_tokens=MAX_OUTPUT_TOKENS,
+            temperature=TEMPERATURE,
+            use_responses_api=True,
+        )
+
+    raise ValueError(f"Unknown LLM_PROVIDER: {settings.llm_provider!r} (expected 'openai' or 'google')")
 
 SYSTEM_PROMPT = """You are an expert medical education flashcard creator. Your job is to analyze
 lecture slides and generate high-quality Anki flashcards optimized for active recall.
@@ -98,17 +132,13 @@ def _build_slide_content(slides: list[SlideInput]) -> list[dict]:
 
 
 async def generate_cards(slides: list[SlideInput]) -> GeneratedDeck:
-    """Generate flashcards from lecture slide images using GPT-4o Vision.
+    """Generate flashcards from lecture slide images using a vision LLM.
 
+    The provider (OpenAI GPT-4o or Google Gemini) is selected via LLM_PROVIDER.
     Processes slides in batches to manage context window limits.
     """
-    llm = ChatOpenAI(
-        model=settings.openai_model,
-        api_key=settings.openai_api_key,
-        max_tokens=16384,
-        temperature=0.3,
-        use_responses_api=True,
-    )
+    llm = _build_llm()
+    logger.info("Using LLM provider=%s", settings.llm_provider)
 
     structured_llm = llm.with_structured_output(GeneratedDeck)
 
