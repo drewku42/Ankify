@@ -1,9 +1,10 @@
 import base64
 import io
 import logging
+import tempfile
 from pathlib import Path
 
-from pdf2image import convert_from_path, convert_from_bytes
+from pdf2image import convert_from_bytes, convert_from_path
 from PIL import Image
 
 from app.models import SlideInput
@@ -37,30 +38,41 @@ def pdf_to_slides(pdf_source: str | bytes) -> list[SlideInput]:
     Returns:
         List of SlideInput objects, one per page.
     """
-    if isinstance(pdf_source, str):
-        path = Path(pdf_source)
-        if not path.exists():
-            raise FileNotFoundError(f"PDF not found: {pdf_source}")
-        logger.info("Converting PDF to images: %s", pdf_source)
-        images = convert_from_path(str(path), dpi=200)
-    else:
-        logger.info("Converting PDF bytes to images (%d bytes)", len(pdf_source))
-        images = convert_from_bytes(pdf_source, dpi=200)
-
-    logger.info("Extracted %d pages from PDF", len(images))
-
     slides: list[SlideInput] = []
-    for i, image in enumerate(images):
-        image_bytes = _optimize_image(image)
-        b64 = base64.b64encode(image_bytes).decode("utf-8")
-        slides.append(
-            SlideInput(
-                page_number=i + 1,
-                image_base64=b64,
-                mime_type="image/jpeg",
+
+    # Render every page to a temp folder in a single Poppler pass, but pull the
+    # decoded images back into RAM ONE AT A TIME (paths_only returns file paths,
+    # not loaded images). This keeps peak memory flat regardless of deck size —
+    # the fix for the 2026-07-06 OOM outage. See adrs/0001-*.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        if isinstance(pdf_source, str):
+            path = Path(pdf_source)
+            if not path.exists():
+                raise FileNotFoundError(f"PDF not found: {pdf_source}")
+            logger.info("Converting PDF to images: %s", pdf_source)
+            page_paths = convert_from_path(
+                str(path), dpi=200, output_folder=tmpdir, paths_only=True
             )
-        )
-        logger.debug("Page %d: %d bytes encoded", i + 1, len(image_bytes))
+        else:
+            logger.info("Converting PDF bytes to images (%d bytes)", len(pdf_source))
+            page_paths = convert_from_bytes(
+                pdf_source, dpi=200, output_folder=tmpdir, paths_only=True
+            )
+
+        logger.info("Extracted %d pages from PDF", len(page_paths))
+
+        for i, page_path in enumerate(page_paths):
+            with Image.open(page_path) as image:
+                image_bytes = _optimize_image(image)
+            b64 = base64.b64encode(image_bytes).decode("utf-8")
+            slides.append(
+                SlideInput(
+                    page_number=i + 1,
+                    image_base64=b64,
+                    mime_type="image/jpeg",
+                )
+            )
+            logger.debug("Page %d: %d bytes encoded", i + 1, len(image_bytes))
 
     return slides
 
