@@ -226,4 +226,49 @@
     line-height: 1.5;
     margin: 0;
   }
+
+  &__sample {
+    width: 100%;
+    max-width: 320px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.13);
+    overflow: hidden;
+    border: 1px solid var(--l-border);
+  }
+
+  &__sample-top {
+    background: var(--l-ink);
+    color: var(--l-chartreuse);
+    padding: 0.6rem 0.9rem;
+    font: 700 0.625rem/1 var(--l-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  &__sample-body { padding: 1rem 1rem 1.125rem; }
+
+  &__sample-q {
+    font: 700 0.9375rem/1.25 var(--l-display);
+    color: var(--l-ink);
+    margin: 0 0 0.75rem;
+  }
+
+  &__sample-divider {
+    height: 1px;
+    background: #eceee6;
+    margin: 0 0 0.75rem;
+  }
+
+  &__sample-a {
+    font: 500 0.8125rem/1.35 var(--l-display);
+    color: var(--l-muted);
+    margin: 0;
+  }
+
+  &__sample-foot {
+    padding: 0 1rem 0.875rem;
+    font: 600 0.625rem/1 var(--l-display);
+    color: var(--l-emerald);
+  }
 }
