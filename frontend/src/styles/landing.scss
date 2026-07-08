@@ -271,4 +271,39 @@
     font: 600 0.625rem/1 var(--l-display);
     color: var(--l-emerald);
   }
+
+  &__showcase {
+    display: flex;
+    align-items: center;
+    gap: 2.75rem;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 3rem 3rem 4.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__showcase-copy { flex: 1; min-width: 280px; }
+
+  &__showcase-title {
+    font: 800 1.75rem/1.1 var(--l-display);
+    letter-spacing: -0.025em;
+    margin: 0.75rem 0 0.75rem;
+    max-width: 22rem;
+  }
+
+  &__footer {
+    background: var(--l-ink);
+    color: var(--l-bg);
+    text-align: center;
+    padding: 4rem 3rem;
+
+    .landing__footer-title {
+      font: 800 2rem/1.1 var(--l-display);
+      letter-spacing: -0.03em;
+      margin: 0 0 1.75rem;
+    }
+    .landing__cta { justify-content: center; }
+    .landing__export { color: var(--l-chartreuse); b { color: var(--l-bg); } }
+    .landing__btn { background: var(--l-chartreuse); color: var(--l-ink); }
+  }
 }
