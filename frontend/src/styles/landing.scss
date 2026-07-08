@@ -189,4 +189,41 @@
     letter-spacing: -0.035em;
     margin: 0 0 1.125rem;
   }
+
+  &__how {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 3rem 3rem 4.5rem;
+  }
+
+  &__steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.75rem;
+    margin-top: 1.5rem;
+  }
+
+  &__step {
+    border-top: 2px solid var(--l-ink);
+    padding-top: 1rem;
+  }
+
+  &__step-n {
+    font: 700 0.75rem/1 var(--l-mono);
+    letter-spacing: 0.12em;
+    color: var(--l-emerald);
+  }
+
+  &__step-title {
+    font: 800 1.25rem/1.1 var(--l-display);
+    letter-spacing: -0.02em;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  &__step-body {
+    color: var(--l-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    margin: 0;
+  }
 }
