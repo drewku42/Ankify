@@ -1,0 +1,40 @@
+.landing {
+  --l-ink: #12140f;
+  --l-bg: #f4f5f0;
+  --l-emerald: #0f7a52;
+  --l-chartreuse: #c6f26b;
+  --l-muted: #4a4d43;
+  --l-border: #d9ddd0;
+  --l-display: "Helvetica Neue", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --l-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  min-height: 100vh;
+  background: var(--l-bg);
+  color: var(--l-ink);
+  font-family: var(--l-display);
+  -webkit-font-smoothing: antialiased;
+
+  &__kicker {
+    font: 700 0.75rem/1 var(--l-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--l-emerald);
+    margin: 0 0 1rem;
+  }
+
+  &__mark {
+    background: var(--l-chartreuse);
+    color: var(--l-ink);
+    padding: 0 0.3em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  &__subcopy {
+    color: var(--l-muted);
+    font-size: 1rem;
+    max-width: 26rem;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+}

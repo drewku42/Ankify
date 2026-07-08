@@ -6,6 +6,7 @@ import { store } from "@/store";
 import App from "@/App";
 import "react-toastify/dist/ReactToastify.css";
 import "@/styles/global.scss";
+import "@/styles/landing.scss";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
