@@ -132,4 +132,40 @@
     font: 600 0.62rem/1.25 var(--l-display);
     color: #dfe4d6;
   }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    background: var(--l-ink);
+    color: var(--l-bg);
+    border: none;
+    padding: 0.875rem 1.625rem;
+    font: 700 0.8125rem/1 var(--l-display);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    &:hover { opacity: 0.88; }
+  }
+
+  &__export {
+    font: 600 0.75rem/1.4 var(--l-display);
+    color: var(--l-emerald);
+    b { color: var(--l-ink); }
+  }
+
+  &__dev {
+    background: transparent;
+    border: 1px solid var(--l-border);
+    color: var(--l-muted);
+    padding: 0.5rem 0.875rem;
+    font: 600 0.75rem/1 var(--l-display);
+    cursor: pointer;
+    &:disabled { opacity: 0.5; }
+  }
 }
