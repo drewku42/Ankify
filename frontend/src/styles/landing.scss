@@ -37,4 +37,99 @@
     margin: 0 0 1.5rem;
     line-height: 1.5;
   }
+
+  &__flow {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  &__fan {
+    position: relative;
+    width: 170px;
+    height: 150px;
+  }
+
+  &__arrow {
+    font: 800 1.6rem/1 var(--l-display);
+    color: var(--l-emerald);
+  }
+
+  &__page {
+    position: absolute;
+    bottom: 0;
+    left: 35px;
+    width: 100px;
+    height: 132px;
+    background: #fff;
+    border: 1px solid var(--l-border);
+    border-radius: 6px;
+    box-shadow: var(--shadow-md, 0 6px 16px rgba(0, 0, 0, 0.08));
+    transform-origin: bottom center;
+
+    &--p1 { transform: rotate(-16deg) translateX(-6px); }
+    &--p2 { transform: rotate(-6deg); }
+    &--p3 { transform: rotate(4deg) translateX(4px); }
+    &--p4 { transform: rotate(14deg) translateX(8px); z-index: 3; }
+    // the PDF tag is absolutely positioned; push the first line below it.
+    // Target the --m modifier (the first line in p4) rather than :first-of-type,
+    // since the absolutely-positioned .landing__pdftag is the first <span> child.
+    &--p4 .landing__ln--m { margin-top: 34px; }
+  }
+
+  &__pdftag {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--l-emerald);
+    color: #eaffef;
+    font: 800 0.7rem/1 var(--l-display);
+    letter-spacing: 0.12em;
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+
+  &__ln {
+    display: block;
+    height: 5px;
+    background: #e6e9de;
+    border-radius: 3px;
+    margin: 9px 12px 0;
+    &--s { width: 52%; }
+    &--m { width: 74%; }
+  }
+
+  &__pdfcard {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    width: 120px;
+    height: 78px;
+    background: var(--l-ink);
+    border-radius: 9px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+    padding: 11px 12px;
+    box-sizing: border-box;
+    transform-origin: bottom center;
+    color: #eef2e6;
+
+    &--c1 { transform: rotate(-14deg) translateX(-4px); }
+    &--c2 { transform: rotate(-2deg); }
+    &--c3 { transform: rotate(11deg) translateX(6px); z-index: 3; }
+  }
+
+  &__pdfcard-q {
+    display: block;
+    color: var(--l-chartreuse);
+    font: 700 0.56rem/1.2 var(--l-display);
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+
+  &__pdfcard-a {
+    font: 600 0.62rem/1.25 var(--l-display);
+    color: #dfe4d6;
+  }
 }
