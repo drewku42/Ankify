@@ -168,4 +168,25 @@
     cursor: pointer;
     &:disabled { opacity: 0.5; }
   }
+
+  &__hero {
+    display: flex;
+    align-items: center;
+    gap: 2.75rem;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 4.5rem 3rem;
+    flex-wrap: wrap;
+  }
+
+  &__hero-copy {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  &__headline {
+    font: 800 clamp(2.25rem, 5vw, 2.875rem) / 0.97 var(--l-display);
+    letter-spacing: -0.035em;
+    margin: 0 0 1.125rem;
+  }
 }
