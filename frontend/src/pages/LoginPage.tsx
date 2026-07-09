@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/authSlice";
 import { api } from "@/store/api";
 import { API_URL } from "@/config";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -31,25 +33,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-page__card">
-        <h1 className="login-page__title">Ankify</h1>
-        <p className="login-page__subtitle">
+    <div className="flex min-h-screen items-center justify-center bg-muted px-4">
+      <Card className="w-full max-w-sm gap-0 p-10 text-center">
+        <h1 className="text-3xl font-bold tracking-tight">Ankify</h1>
+        <p className="mt-2 mb-8 text-muted-foreground">
           Turn lecture slides into Anki decks with AI
         </p>
-        <button className="login-page__button" onClick={handleGoogleLogin}>
+        <Button size="lg" className="w-full" onClick={handleGoogleLogin}>
           Sign in with Google
-        </button>
+        </Button>
         {import.meta.env.DEV && (
-          <button
-            className="login-page__dev-button"
+          <Button
+            variant="outline"
+            className="mt-3 w-full border-dashed text-muted-foreground"
             onClick={handleDevLogin}
             disabled={isLoading}
           >
             {isLoading ? "Signing in..." : "Dev Login"}
-          </button>
+          </Button>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

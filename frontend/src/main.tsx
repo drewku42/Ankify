@@ -4,8 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "@/store";
 import App from "@/App";
-import "react-toastify/dist/ReactToastify.css";
-import "@/styles/global.scss";
+import "@/index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

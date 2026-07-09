@@ -1,8 +1,16 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
+import { LayoutGrid, Upload } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setUser, setLoading, logout } from "@/store/authSlice";
 import { API_URL } from "@/config";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+const NAV_ITEMS = [
+  { to: "/", label: "My Decks", icon: LayoutGrid },
+  { to: "/upload", label: "New Deck", icon: Upload },
+];
 
 export default function AuthLayout() {
   const { user, token, isLoading } = useAppSelector((state) => state.auth);
@@ -29,8 +37,8 @@ export default function AuthLayout() {
 
   if (isLoading) {
     return (
-      <div className="auth-layout__loading">
-        <div className="spinner" />
+      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
+        <div className="size-5 animate-spin rounded-full border-2 border-border border-t-foreground" />
       </div>
     );
   }
@@ -40,49 +48,54 @@ export default function AuthLayout() {
   }
 
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <Link to="/" className="sidebar__logo">
+    <div className="flex min-h-screen">
+      <aside className="fixed inset-y-0 left-0 z-10 flex w-60 flex-col border-r border-sidebar-border bg-sidebar px-3 py-4">
+        <Link
+          to="/"
+          className="mb-6 px-3 py-2 text-lg font-bold text-sidebar-foreground"
+        >
           Ankify
         </Link>
-        <nav className="sidebar__nav">
-          <Link
-            to="/"
-            className={`sidebar__link ${location.pathname === "/" ? "sidebar__link--active" : ""}`}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
-            </svg>
-            My Decks
-          </Link>
-          <Link
-            to="/upload"
-            className={`sidebar__link ${location.pathname === "/upload" ? "sidebar__link--active" : ""}`}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            New Deck
-          </Link>
+        <nav className="flex flex-1 flex-col gap-0.5">
+          {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
+            const active = location.pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                className={cn(
+                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  active
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                )}
+              >
+                <Icon className="size-[18px]" />
+                {label}
+              </Link>
+            );
+          })}
         </nav>
-        <div className="sidebar__footer">
-          <div className="sidebar__user">
+        <div className="mt-3 border-t border-sidebar-border pt-3">
+          <div className="mb-1.5 flex items-center gap-2 px-3 py-1.5">
             {user.avatar && (
-              <img src={user.avatar} alt="" className="sidebar__avatar" />
+              <img src={user.avatar} alt="" className="size-6 rounded-full" />
             )}
-            <span className="sidebar__name">
+            <span className="truncate text-[0.8125rem] text-sidebar-foreground">
               {user.name || user.email}
             </span>
           </div>
-          <button
-            className="sidebar__logout"
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start text-muted-foreground hover:text-destructive"
             onClick={() => dispatch(logout())}
           >
             Sign out
-          </button>
+          </Button>
         </div>
       </aside>
-      <main className="main-content">
+      <main className="ml-60 max-w-4xl flex-1 px-10 py-8">
         <Outlet />
       </main>
     </div>

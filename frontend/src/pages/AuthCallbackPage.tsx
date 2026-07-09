@@ -38,7 +38,7 @@ export default function AuthCallbackPage() {
   }, [searchParams, navigate, dispatch]);
 
   return (
-    <div className="auth-callback">
+    <div className="flex min-h-screen items-center justify-center text-muted-foreground">
       <p>Signing you in...</p>
     </div>
   );

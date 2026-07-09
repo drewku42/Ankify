@@ -1,7 +1,12 @@
 import { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { FileText, UploadCloud, Loader2 } from "lucide-react";
 import { useCreateDeckMutation } from "@/store/api";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function UploadPage() {
   const navigate = useNavigate();
@@ -23,20 +28,23 @@ export default function UploadPage() {
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile?.type === "application/pdf") {
-      setFile(droppedFile);
-      if (!name) {
-        setName(droppedFile.name.replace(/\.pdf$/i, ""));
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile?.type === "application/pdf") {
+        setFile(droppedFile);
+        if (!name) {
+          setName(droppedFile.name.replace(/\.pdf$/i, ""));
+        }
+      } else {
+        toast.warning("Please upload a PDF file");
       }
-    } else {
-      toast.warning("Please upload a PDF file");
-    }
-  }, [name]);
+    },
+    [name],
+  );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -70,27 +78,34 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="upload-page">
-      <h1>Create New Deck</h1>
-      <p className="upload-page__subtitle">
+    <div className="max-w-xl">
+      <h1 className="text-2xl font-semibold">Create New Deck</h1>
+      <p className="mt-1 mb-8 text-muted-foreground">
         Upload lecture slides and let AI generate your Anki cards.
       </p>
 
-      <form onSubmit={handleSubmit} className="upload-form">
-        <label className="upload-form__label">
-          Deck Name
-          <input
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="grid gap-1.5">
+          <Label htmlFor="deck-name">Deck Name</Label>
+          <Input
+            id="deck-name"
             type="text"
-            className="upload-form__input"
             placeholder="e.g. Cardiovascular System"
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isCreating}
           />
-        </label>
+        </div>
 
         <div
-          className={`upload-zone ${dragActive ? "upload-zone--active" : ""} ${file ? "upload-zone--has-file" : ""}`}
+          className={cn(
+            "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors",
+            file
+              ? "border-solid border-emerald-500 bg-emerald-50 text-left dark:bg-emerald-950/30"
+              : dragActive
+                ? "border-primary bg-accent"
+                : "border-border hover:border-primary hover:bg-accent",
+          )}
           onDragEnter={handleDrag}
           onDragOver={handleDrag}
           onDragLeave={handleDrag}
@@ -105,56 +120,55 @@ export default function UploadPage() {
             hidden
           />
           {file ? (
-            <div className="upload-zone__file">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              <div>
-                <p className="upload-zone__filename">{file.name}</p>
-                <p className="upload-zone__size">
+            <div className="flex items-center gap-3">
+              <FileText className="size-6 shrink-0 text-emerald-600" />
+              <div className="min-w-0">
+                <p className="truncate text-[0.9375rem] font-medium">
+                  {file.name}
+                </p>
+                <p className="text-[0.8125rem] text-muted-foreground">
                   {(file.size / 1024 / 1024).toFixed(1)} MB
                 </p>
               </div>
-              <button
+              <Button
                 type="button"
-                className="upload-zone__remove"
+                variant="ghost"
+                size="sm"
+                className="ml-auto text-destructive hover:text-destructive"
                 onClick={(e) => {
                   e.stopPropagation();
                   setFile(null);
                 }}
               >
                 Remove
-              </button>
+              </Button>
             </div>
           ) : (
-            <div className="upload-zone__placeholder">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <p>
+            <div className="flex flex-col items-center gap-3">
+              <UploadCloud className="size-10 text-muted-foreground" />
+              <p className="text-[0.9375rem]">
                 <strong>Drop your PDF here</strong> or click to browse
               </p>
-              <p className="upload-zone__hint">PDF files only</p>
+              <p className="text-[0.8125rem] text-muted-foreground">
+                PDF files only
+              </p>
             </div>
           )}
         </div>
 
-        <button
+        <Button
           type="submit"
-          className="btn btn--primary btn--lg"
+          size="lg"
           disabled={isCreating || !name.trim() || !file}
         >
           {isCreating ? (
             <>
-              <span className="spinner spinner--sm" /> Uploading...
+              <Loader2 className="animate-spin" /> Uploading...
             </>
           ) : (
             "Generate Anki Cards"
           )}
-        </button>
+        </Button>
       </form>
     </div>
   );

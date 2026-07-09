@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import {
   useGetDeckQuery,
   useUpdateCardMutation,
@@ -10,6 +11,17 @@ import {
   type Card,
 } from "@/store/api";
 import { API_URL } from "@/config";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function CardEditor({
   card,
@@ -40,52 +52,48 @@ function CardEditor({
   };
 
   return (
-    <div className="card-editor-overlay" onClick={onClose}>
-      <div className="card-editor" onClick={(e) => e.stopPropagation()}>
-        <div className="card-editor__header">
-          <h3>Edit Card</h3>
-        </div>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Edit Card</DialogTitle>
+      </DialogHeader>
 
-        <label className="card-editor__label">
-          Front
-          <textarea
-            className="card-editor__textarea"
-            value={front}
-            onChange={(e) => setFront(e.target.value)}
-            rows={4}
-          />
-        </label>
-
-        <label className="card-editor__label">
-          Back
-          <textarea
-            className="card-editor__textarea"
-            value={back}
-            onChange={(e) => setBack(e.target.value)}
-            rows={4}
-          />
-        </label>
-
-        {card.sourcePageNum && (
-          <p className="card-editor__source">
-            Source: Slide {card.sourcePageNum}
-          </p>
-        )}
-
-        <div className="card-editor__actions">
-          <button className="btn btn--ghost" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="btn btn--primary"
-            onClick={handleSave}
-            disabled={isLoading}
-          >
-            {isLoading ? "Saving..." : "Save"}
-          </button>
-        </div>
+      <div className="grid gap-1.5">
+        <Label htmlFor="card-front">Front</Label>
+        <Textarea
+          id="card-front"
+          value={front}
+          onChange={(e) => setFront(e.target.value)}
+          rows={4}
+          className="font-mono"
+        />
       </div>
-    </div>
+
+      <div className="grid gap-1.5">
+        <Label htmlFor="card-back">Back</Label>
+        <Textarea
+          id="card-back"
+          value={back}
+          onChange={(e) => setBack(e.target.value)}
+          rows={4}
+          className="font-mono"
+        />
+      </div>
+
+      {card.sourcePageNum && (
+        <p className="text-[0.8125rem] text-muted-foreground">
+          Source: Slide {card.sourcePageNum}
+        </p>
+      )}
+
+      <DialogFooter>
+        <Button variant="ghost" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button onClick={handleSave} disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save"}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   );
 }
 
@@ -189,13 +197,11 @@ export default function DeckPage() {
 
   if (isLoading) {
     return (
-      <div className="deck-page">
-        <div className="deck-page__header">
-          <div className="skeleton-text skeleton-text--lg" />
-        </div>
-        <div className="skeleton-list">
+      <div>
+        <Skeleton className="mb-6 h-8 w-48" />
+        <div className="flex flex-col gap-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="skeleton-card" />
+            <Skeleton key={i} className="h-20 w-full" />
           ))}
         </div>
       </div>
@@ -204,118 +210,122 @@ export default function DeckPage() {
 
   if (!deck) {
     return (
-      <div className="deck-page">
-        <h1>Deck not found</h1>
-        <Link to="/" className="btn btn--ghost">
-          Back to Decks
-        </Link>
+      <div>
+        <h1 className="mb-4 text-2xl font-semibold">Deck not found</h1>
+        <Button asChild variant="ghost">
+          <Link to="/">Back to Decks</Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="deck-page">
-      <div className="deck-page__header">
+    <div>
+      <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <Link to="/" className="deck-page__back">
-            &larr; All Decks
+          <Link
+            to="/"
+            className="mb-1.5 inline-flex items-center gap-1 text-[0.8125rem] text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="size-3.5" /> All Decks
           </Link>
-          <h1>{deck.name}</h1>
+          <h1 className="text-2xl font-semibold">{deck.name}</h1>
           {deck.sourceFileName && (
-            <p className="deck-page__source">
+            <p className="mt-1 text-[0.8125rem] text-muted-foreground">
               From: {deck.sourceFileName}
             </p>
           )}
         </div>
-        <div className="deck-page__actions">
+        <div className="flex shrink-0 gap-2">
           {deck.sourceFileKey && !isGenerating && (
-            <button
-              className="btn btn--ghost"
-              onClick={handleRegenerate}
-            >
+            <Button variant="ghost" onClick={handleRegenerate}>
               Regenerate
-            </button>
+            </Button>
           )}
-          <button
-            className="btn btn--primary"
+          <Button
             onClick={handleExport}
             disabled={isExporting || cards.length === 0 || isGenerating}
           >
             {isExporting ? "Exporting..." : "Export .apkg"}
-          </button>
-          <button className="btn btn--danger" onClick={handleDeleteDeck}>
+          </Button>
+          <Button variant="destructive" onClick={handleDeleteDeck}>
             Delete
-          </button>
+          </Button>
         </div>
       </div>
 
       {isGenerating && (
-        <div className="deck-page__generating">
-          <span className="spinner" />
-          <p>
-            Generating cards from your slides... This may take a minute.
-          </p>
+        <div className="mb-6 flex items-center gap-3 rounded-md border border-blue-200 bg-blue-50 px-5 py-4 text-[0.9375rem] text-blue-700 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
+          <Loader2 className="size-5 animate-spin" />
+          <p>Generating cards from your slides... This may take a minute.</p>
         </div>
       )}
 
       {status === "error" && cards.length === 0 && (
-        <div className="deck-page__error">
-          <p>Card generation failed.</p>
+        <div className="mb-6 rounded-md border border-destructive/30 bg-destructive/5 p-8 text-center text-destructive">
+          <p className="mb-4 font-medium">Card generation failed.</p>
           {deck.sourceFileKey && (
-            <button className="btn btn--primary" onClick={handleRegenerate}>
-              Try Again
-            </button>
+            <Button onClick={handleRegenerate}>Try Again</Button>
           )}
         </div>
       )}
 
       {!isGenerating && (
-        <p className="deck-page__count">
+        <p className="mb-4 text-sm text-muted-foreground">
           {cards.length} {cards.length === 1 ? "card" : "cards"}
         </p>
       )}
 
       {cards.length === 0 && !isGenerating && status !== "error" ? (
-        <div className="deck-page__empty">
+        <div className="rounded-md bg-muted/40 px-8 py-12 text-center text-muted-foreground">
           <p>No cards yet. Upload a PDF and generate cards to get started.</p>
         </div>
       ) : (
         !isGenerating && (
-          <div className="card-list">
+          <div className="flex flex-col gap-2">
             {cards.map((card, index) => (
-              <div key={card.id} className="card-item">
-                <div className="card-item__number">{index + 1}</div>
-                <div className="card-item__content">
-                  <div className="card-item__front">
-                    <span className="card-item__label">Q</span>
-                    <span
-                      dangerouslySetInnerHTML={{ __html: card.front }}
-                    />
+              <div
+                key={card.id}
+                className="group flex items-start gap-3 rounded-md border p-3.5 transition-colors hover:border-primary"
+              >
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
+                  {index + 1}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1.5 flex gap-2 text-sm font-medium">
+                    <span className="mt-px flex size-[18px] shrink-0 items-center justify-center rounded-sm bg-blue-100 text-[0.6875rem] font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                      Q
+                    </span>
+                    <span dangerouslySetInnerHTML={{ __html: card.front }} />
                   </div>
-                  <div className="card-item__back">
-                    <span className="card-item__label">A</span>
+                  <div className="flex gap-2 text-sm text-muted-foreground">
+                    <span className="mt-px flex size-[18px] shrink-0 items-center justify-center rounded-sm bg-emerald-100 text-[0.6875rem] font-bold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                      A
+                    </span>
                     <div
-                      className="card-item__back-content"
+                      className="[&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
                       dangerouslySetInnerHTML={{ __html: card.back }}
                     />
                   </div>
                 </div>
-                <div className="card-item__meta">
-                  {card.sourcePageNum && (
-                    <span className="card-item__page">
-                      p.{card.sourcePageNum}
-                    </span>
-                  )}
-                </div>
-                <div className="card-item__actions">
-                  <button
-                    className="btn btn--ghost btn--sm"
+                {card.sourcePageNum && (
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    p.{card.sourcePageNum}
+                  </span>
+                )}
+                <div className="flex shrink-0 flex-col gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto px-2 py-1 text-xs"
                     onClick={() => setEditingCard(card)}
                   >
                     Edit
-                  </button>
-                  <button
-                    className="btn btn--ghost btn--sm btn--danger-text"
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto px-2 py-1 text-xs text-destructive hover:text-destructive"
                     onClick={() => {
                       if (confirm("Delete this card?")) {
                         deleteCard({ deckId: id!, cardId: card.id });
@@ -323,7 +333,7 @@ export default function DeckPage() {
                     }}
                   >
                     Delete
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -331,13 +341,18 @@ export default function DeckPage() {
         )
       )}
 
-      {editingCard && (
-        <CardEditor
-          card={editingCard}
-          deckId={id!}
-          onClose={() => setEditingCard(null)}
-        />
-      )}
+      <Dialog
+        open={!!editingCard}
+        onOpenChange={(open) => !open && setEditingCard(null)}
+      >
+        {editingCard && (
+          <CardEditor
+            card={editingCard}
+            deckId={id!}
+            onClose={() => setEditingCard(null)}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }

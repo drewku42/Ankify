@@ -1,5 +1,5 @@
 import { isRejectedWithValue, Middleware } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export const apiErrorMiddleware: Middleware =
   () => (next) => (action) => {
