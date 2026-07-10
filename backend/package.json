@@ -7,7 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint src/",
+    "lint": "eslint .",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio"
@@ -25,6 +25,7 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.0",
@@ -34,8 +35,10 @@
     "@types/passport-google-oauth20": "^2.0.16",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.7.0",
     "prisma": "^6.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.63.0"
   }
 }
