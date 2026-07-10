@@ -29,7 +29,7 @@ export async function uploadFile(
   bucket: string,
   key: string,
   body: Buffer,
-  contentType: string
+  contentType: string,
 ): Promise<string> {
   if (useLocal) {
     const dest = localPath(bucket, key);
@@ -44,7 +44,7 @@ export async function uploadFile(
       Key: key,
       Body: body,
       ContentType: contentType,
-    })
+    }),
   );
   return key;
 }
@@ -55,7 +55,7 @@ export async function getFile(bucket: string, key: string): Promise<Buffer> {
   }
 
   const response = await s3!.send(
-    new GetObjectCommand({ Bucket: bucket, Key: key })
+    new GetObjectCommand({ Bucket: bucket, Key: key }),
   );
   const stream = response.Body;
   if (!stream) throw new Error(`Empty response for s3://${bucket}/${key}`);

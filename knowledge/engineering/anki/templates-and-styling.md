@@ -35,7 +35,7 @@ Only valid in the back template. Inserts the rendered front template content. Do
 
 ```html
 {{FrontSide}}
-<hr id=answer>
+<hr id="answer" />
 {{Back}}
 ```
 
@@ -46,7 +46,7 @@ The `id=answer` tells Anki where the answer begins (for auto-scrolling on mobile
 Templates are HTML, so use `<br>` for line breaks, not literal newlines:
 
 ```html
-{{Field 1}}<br>
+{{Field 1}}<br />
 {{Field 2}}
 ```
 
@@ -70,7 +70,6 @@ Renders as a "show hint" link that reveals the field content when clicked.
 
 Available in any template without being defined as note fields:
 
-
 | Syntax          | Content                                     |
 | --------------- | ------------------------------------------- |
 | `{{Tags}}`      | Note's tags                                 |
@@ -81,27 +80,19 @@ Available in any template without being defined as note fields:
 | `{{Card}}`      | Card type name (e.g., "Forward")            |
 | `{{FrontSide}}` | Front template content (back template only) |
 
-
 ## Conditional Replacement
 
 Show content only when a field is non-empty:
 
 ```html
-{{#FieldName}}
-    This shows when FieldName has content
-{{/FieldName}}
-
-{{^FieldName}}
-    This shows when FieldName is empty
-{{/FieldName}}
+{{#FieldName}} This shows when FieldName has content {{/FieldName}}
+{{^FieldName}} This shows when FieldName is empty {{/FieldName}}
 ```
 
 Real-world example — show tags only when present:
 
 ```html
-{{#Tags}}
-    Tags: {{Tags}}
-{{/Tags}}
+{{#Tags}} Tags: {{Tags}} {{/Tags}}
 ```
 
 ### Controlling Card Generation
@@ -109,10 +100,7 @@ Real-world example — show tags only when present:
 Anki won't generate cards with empty front sides. Use conditionals to control which cards are created:
 
 ```html
-{{#Expression}}
-    {{Expression}}
-    {{Notes}}
-{{/Expression}}
+{{#Expression}} {{Expression}} {{Notes}} {{/Expression}}
 ```
 
 This card is only generated if `Expression` is non-empty.
@@ -120,12 +108,7 @@ This card is only generated if `Expression` is non-empty.
 Require multiple fields:
 
 ```html
-{{#Expression}}
-    {{#Notes}}
-        {{Expression}}
-        {{Notes}}
-    {{/Notes}}
-{{/Expression}}
+{{#Expression}} {{#Notes}} {{Expression}} {{Notes}} {{/Notes}} {{/Expression}}
 ```
 
 ## Cloze Templates
@@ -156,13 +139,7 @@ This generates two cards:
 Cloze-specific conditional blocks:
 
 ```html
-{{cloze:Text}}
-{{#c1}}
-    {{Hint1}}
-{{/c1}}
-{{#c2}}
-    {{Hint2}}
-{{/c2}}
+{{cloze:Text}} {{#c1}} {{Hint1}} {{/c1}} {{#c2}} {{Hint2}} {{/c2}}
 ```
 
 ### Nested Cloze Deletions (2.1.56+)
@@ -209,13 +186,11 @@ Supported up to ~3 levels deep (Anki 24.11). No support for partial overlaps.
 
 For languages with pronunciation annotations:
 
-
-| Filter                 | Input       | Output               |
-| ---------------------- | ----------- | -------------------- |
-| `{{furigana:MyField}}` | `日本語[にほんご]` | 日本語 with にほんご above  |
-| `{{kana:MyField}}`     | `日本語[にほんご]` | にほんご (reading only)  |
-| `{{kanji:MyField}}`    | `日本語[にほんご]` | 日本語 (base text only) |
-
+| Filter                 | Input              | Output                     |
+| ---------------------- | ------------------ | -------------------------- |
+| `{{furigana:MyField}}` | `日本語[にほんご]` | 日本語 with にほんご above |
+| `{{kana:MyField}}`     | `日本語[にほんご]` | にほんご (reading only)    |
+| `{{kanji:MyField}}`    | `日本語[にほんご]` | 日本語 (base text only)    |
 
 Syntax: `BaseText[RubyText]` with a space before the base character to scope correctly.
 
@@ -237,20 +212,26 @@ Use `{{type:nc:FieldName}}` to ignore diacritics in comparison.
 
 ```css
 .card {
-    font-family: arial;
-    font-size: 20px;
-    text-align: center;
-    color: black;
-    background-color: white;
+  font-family: arial;
+  font-size: 20px;
+  text-align: center;
+  color: black;
+  background-color: white;
 }
 ```
 
 ### Card-Specific Styling
 
 ```css
-.card { background-color: yellow; }   /* all cards */
-.card1 { background-color: blue; }    /* first card type only */
-.card2 { background-color: green; }   /* second card type only */
+.card {
+  background-color: yellow;
+} /* all cards */
+.card1 {
+  background-color: blue;
+} /* first card type only */
+.card2 {
+  background-color: green;
+} /* second card type only */
 ```
 
 ### Field-Specific Styling
@@ -263,8 +244,8 @@ Wrap fields in styled divs:
 
 ```css
 .expression {
-    font-family: "MS Mincho";
-    font-size: 30px;
+  font-family: "MS Mincho";
+  font-size: 30px;
 }
 ```
 
@@ -272,28 +253,43 @@ Wrap fields in styled divs:
 
 ```css
 .card.nightMode {
-    background-color: #555;
+  background-color: #555;
 }
 .nightMode .myclass {
-    color: yellow;
+  color: yellow;
 }
 ```
 
 ### Platform-Specific CSS
 
 ```css
-.win .example { font-family: "Example1"; }
-.mac .example { font-family: "Example2"; }
-.linux:not(.android) .example { font-family: "Example3"; }
-.mobile .example { font-family: "Example5"; }
-.iphone .example, .ipad .example { font-family: "Example6"; }
-.android .example { font-family: "Example7"; }
+.win .example {
+  font-family: "Example1";
+}
+.mac .example {
+  font-family: "Example2";
+}
+.linux:not(.android) .example {
+  font-family: "Example3";
+}
+.mobile .example {
+  font-family: "Example5";
+}
+.iphone .example,
+.ipad .example {
+  font-family: "Example6";
+}
+.android .example {
+  font-family: "Example7";
+}
 ```
 
 ### RTL Text Direction
 
 ```css
-.card { direction: rtl; }
+.card {
+  direction: rtl;
+}
 ```
 
 Or per-field:
@@ -308,11 +304,11 @@ Bundle fonts by prefixing filenames with `_` and adding to media:
 
 ```css
 @font-face {
-    font-family: myfont;
-    src: url("_arial.ttf");
+  font-family: myfont;
+  src: url("_arial.ttf");
 }
 .card {
-    font-family: myfont;
+  font-family: myfont;
 }
 ```
 
@@ -321,7 +317,10 @@ Bundle fonts by prefixing filenames with `_` and adding to media:
 Default: images shrink to fit screen. Override:
 
 ```css
-img { max-width: none; max-height: none; }
+img {
+  max-width: none;
+  max-height: none;
+}
 ```
 
 ## Media in Templates
@@ -331,7 +330,7 @@ img { max-width: none; max-height: none; }
 Prefix filename with `_` to prevent cleanup:
 
 ```html
-<img src="_logo.jpg">
+<img src="_logo.jpg" />
 ```
 
 ### Dynamic Media (From Fields)
@@ -340,7 +339,7 @@ Media must be referenced **inside field values**, not in templates:
 
 ```html
 <!-- IN THE FIELD VALUE, not the template -->
-<img src="myimage.jpg">
+<img src="myimage.jpg" />
 [sound:myaudio.mp3]
 ```
 
@@ -353,4 +352,3 @@ Template references like `<img src="{{Expression}}.jpg">` are NOT supported.
 3. **Cloze Rendering**: Parse `{{c1::text::hint}}` syntax. Replace active cloze with `[...]` or `[hint]` on front, show full text on back.
 4. **Card Generation Logic**: For each note, iterate card types. Skip if front would render empty (after removing special fields and non-field text).
 5. **The `{{FrontSide}}` tag**: On the back template, replace with the fully rendered front template.
-

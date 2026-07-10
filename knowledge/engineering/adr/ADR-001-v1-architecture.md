@@ -1,12 +1,10 @@
 # ADR-001 — v1 production architecture
 
-
 | Field          | Value      |
 | -------------- | ---------- |
 | **Status**     | `accepted` |
 | **Date**       | 2026-04-16 |
 | **Supersedes** | —          |
-
 
 ## Context
 
@@ -25,7 +23,6 @@ Ankify needed to ship v1 in roughly one week. The system has three distinct conc
 
 ## Alternatives considered
 
-
 | Option                     | Why rejected                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------- |
 | ECS / Lambda               | Over-engineered for one-week timeline and single-digit user count. Higher operational complexity. |
@@ -34,7 +31,6 @@ Ankify needed to ship v1 in roughly one week. The system has three distinct conc
 | OCR-only (no Vision)       | Loses visual context — diagrams, tables, layout. Vision is the core differentiator.               |
 | S3 for prod storage        | Added AWS dependency with no immediate benefit. Local filesystem is simpler until multi-instance. |
 
-
 ## Consequences
 
 - **Simple and fast to ship** — single server, minimal infra.
@@ -42,4 +38,3 @@ Ankify needed to ship v1 in roughly one week. The system has three distinct conc
 - **Co-located services share resources** — a heavy AI generation could starve the API or DB. Acceptable at low volume.
 - **No redundancy** — single point of failure. Acceptable for a pre-revenue product with a small user base.
 - **Migration path is clear** — when we need to scale: split AI server to its own instance, move MySQL to RDS, move storage to S3. The code already supports the S3 driver.
-

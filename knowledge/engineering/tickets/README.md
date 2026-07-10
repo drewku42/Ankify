@@ -12,14 +12,12 @@ Numbers are sequential. Never reuse a number.
 
 ## Statuses
 
-
 | Status        | Meaning                               |
 | ------------- | ------------------------------------- |
 | `open`        | Triaged, not yet started              |
 | `in-progress` | Actively being worked on              |
 | `shipped`     | Merged and deployed                   |
 | `wont-do`     | Intentionally closed without shipping |
-
 
 ## Priority tags
 

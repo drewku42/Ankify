@@ -7,6 +7,7 @@
 ---
 
 ## [INIT] — Team scaffold created
+
 - **What**: Multi-agent team structure established with three personas
 - **Roles**: Jordan (frontend), Alex (backend), Sam (product lead)
 - **CEO**: The user — makes final calls, invokes agents, sets priorities
@@ -19,23 +20,27 @@
 ## Conventions (to be filled in as the project evolves)
 
 ### Tech Stack (locked in)
-| Layer | Stack | Pkg manager |
-|-------|-------|-------------|
-| Frontend | React 19, Vite 6, React Router 7, Redux Toolkit + RTK Query, global SCSS | Yarn |
-| Backend | Express, Prisma (MySQL), Passport (Google OAuth), JWT, multer, helmet | npm |
-| AI server | FastAPI, LangChain, pdf2image/poppler, genanki | Poetry |
-| Database | MySQL (Docker Compose locally, same EC2 in prod) | — |
-| Storage | Local filesystem (default), S3 driver available | — |
+
+| Layer     | Stack                                                                    | Pkg manager |
+| --------- | ------------------------------------------------------------------------ | ----------- |
+| Frontend  | React 19, Vite 6, React Router 7, Redux Toolkit + RTK Query, global SCSS | Yarn        |
+| Backend   | Express, Prisma (MySQL), Passport (Google OAuth), JWT, multer, helmet    | npm         |
+| AI server | FastAPI, LangChain, pdf2image/poppler, genanki                           | Poetry      |
+| Database  | MySQL (Docker Compose locally, same EC2 in prod)                         | —           |
+| Storage   | Local filesystem (default), S3 driver available                          | —           |
 
 ### API Contracts
+
 <!-- When frontend and backend agree on an endpoint shape, document it here -->
 
 ### Data Models
+
 <!-- Shared type definitions and schema decisions -->
 
 ### Architecture Decisions
 
 ADRs live in `knowledge/engineering/adr/`. Use the template at `knowledge/engineering/adr/_TEMPLATE.md`. Current ADRs:
+
 - **ADR-001** — v1 production architecture (Vercel + single EC2 + MySQL + local filesystem)
 
 ---
@@ -43,13 +48,15 @@ ADRs live in `knowledge/engineering/adr/`. Use the template at `knowledge/engine
 ## [2026-04-19] — Ticket and ADR systems established
 
 ### Ticket System (`knowledge/engineering/tickets/`)
+
 - One markdown file per ticket, named `ANKIFY-<number>-<slug>.md`
 - Template: `knowledge/engineering/tickets/_TEMPLATE.md`
 - Statuses: `open` → `in-progress` → `shipped` (or `wont-do`)
 - Current open tickets: ANKIFY-001 through ANKIFY-004 (Sprint 0 urgent fixes)
-- **Convention**: Every feature or bug fix gets a ticket *before* work starts. When shipped, update the ticket status and `Shipped` date.
+- **Convention**: Every feature or bug fix gets a ticket _before_ work starts. When shipped, update the ticket status and `Shipped` date.
 
 ### ADR System (`knowledge/engineering/adr/`)
+
 - One markdown file per decision, named `ADR-<number>-<slug>.md`
 - Template: `knowledge/engineering/adr/_TEMPLATE.md`
 - Statuses: `proposed` → `accepted` (or `superseded` by a later ADR)

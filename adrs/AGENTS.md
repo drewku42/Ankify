@@ -1,12 +1,12 @@
 # adrs/ — Architecture Decision Records
 
 This directory houses **Architecture Decision Records (ADRs)**: short, dated documents
-that capture a meaningful technical decision — *what* we decided, *why*, what we rejected,
+that capture a meaningful technical decision — _what_ we decided, _why_, what we rejected,
 and what it costs us later.
 
 ## Why this exists
 
-Code shows *what* the system does today. It does not show *why* it's that way, what we
+Code shows _what_ the system does today. It does not show _why_ it's that way, what we
 tried and ruled out, or what future-us should reconsider when conditions change. ADRs are
 the memory of the reasoning. When something breaks or a past choice looks wrong, we read
 the ADR instead of re-deriving the argument from scratch — and we learn from it.
@@ -14,7 +14,7 @@ the ADR instead of re-deriving the argument from scratch — and we learn from i
 ## When to write one
 
 Write an ADR when a decision is hard to reverse, affects the shape of the system, or was
-non-obvious enough that a future reader would ask "why did they do it *this* way?"
+non-obvious enough that a future reader would ask "why did they do it _this_ way?"
 Examples: a data-store choice, a change that trades one resource for another (memory for
 disk, cost for latency), rejecting the "obvious" fix for a subtler one.
 

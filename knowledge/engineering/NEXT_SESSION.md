@@ -38,4 +38,4 @@ This file overlaps with [`TODO-ROADMAP.md`](TODO-ROADMAP.md); roadmap + ops live
 
 ---
 
-*Pick up here when continuing product or engineering work.*
+_Pick up here when continuing product or engineering work._

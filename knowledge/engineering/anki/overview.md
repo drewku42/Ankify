@@ -42,14 +42,12 @@ A **card** is a single question/answer pair derived from a note. Cards are what 
 
 Card states:
 
-
 | State        | Description                                               |
 | ------------ | --------------------------------------------------------- |
 | **New**      | Never studied. Waiting in the new queue.                  |
 | **Learning** | Recently introduced, still in initial learning steps.     |
 | **Review**   | Graduated from learning. Has an interval for next review. |
 | **Relearn**  | Previously known but forgotten. Back in learning steps.   |
-
 
 Review cards are further classified:
 
@@ -76,7 +74,6 @@ A **note type** defines:
 
 Built-in note types:
 
-
 | Note Type                     | Fields                              | Cards Generated                                   |
 | ----------------------------- | ----------------------------------- | ------------------------------------------------- |
 | **Basic**                     | Front, Back                         | 1 (front→back)                                    |
@@ -85,7 +82,6 @@ Built-in note types:
 | **Basic (type in answer)**    | Front, Back                         | 1 (with answer typing)                            |
 | **Cloze**                     | Text, Extra                         | 1 per cloze deletion                              |
 | **Image Occlusion**           | Image, Header, Back Extra, Comments | 1 per occluded region                             |
-
 
 Note types are collection-wide, not deck-specific. A single deck can contain cards from multiple note types, and cards from the same note can go to different decks.
 
@@ -108,7 +104,7 @@ Example back template:
 
 ```html
 {{FrontSide}}
-<hr id=answer>
+<hr id="answer" />
 {{Capital}}
 ```
 
@@ -125,4 +121,3 @@ Labels attached to notes for organization and searching. Tags are space-separate
 5. **Media is referenced in fields**, not in templates (e.g., `<img src="image.jpg">`, `[sound:audio.mp3]`).
 6. **IDs are epoch milliseconds.** Note IDs, card IDs, and model IDs are all timestamps in milliseconds.
 7. **GUIDs ensure global uniqueness.** Each note has a GUID for cross-collection dedup.
-

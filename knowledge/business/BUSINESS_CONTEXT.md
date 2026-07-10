@@ -33,7 +33,6 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 
 ### Sources (data in)
 
-
 | Data Element       | Source          | Notes                                              |
 | ------------------ | --------------- | -------------------------------------------------- |
 | PDF lecture slides | User upload     | Clean/blank slides for v1; no size limit           |
@@ -42,9 +41,7 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 | User edits         | In-app editor   | Users review and modify generated cards            |
 | User identity      | Google OAuth    | Authentication                                     |
 
-
 ### Destinations (data out)
-
 
 | Data Element             | Destination                  | Format           | Notes                                                                                                                                         |
 | ------------------------ | ---------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -54,9 +51,7 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 | Card ↔ source page links | MySQL                        | Structured       | Associate each card with its PDF page                                                                                                         |
 | Exported decks           | User download                | `.apkg` (SQLite) | Generated server-side (genanki, AI server)                                                                                                    |
 
-
 ## System Map (as shipped — v1)
-
 
 | System                  | Purpose                                                                                                                                | Direction   |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
@@ -65,7 +60,6 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 | **Local filesystem**    | PDF and intermediate storage on EC2 (`STORAGE_DRIVER=local`)                                                                           | In/Out      |
 | **Google OAuth**        | Authentication                                                                                                                         | In          |
 | **OpenAI API (GPT-4o)** | Vision for slide analysis and card generation                                                                                          | Out → In    |
-
 
 **Local development:** Docker Compose runs MySQL; optional **LocalStack** profile emulates S3 for parity with `STORAGE_DRIVER=s3`. **Local dev default** remains filesystem storage without LocalStack.
 
@@ -115,7 +109,6 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 
 ## Resolved Technical Decisions
 
-
 | Question               | Decision                                                   | Rationale                                                            |
 | ---------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
 | **Hosting (v1)**       | Vercel (frontend) + single EC2 (API + AI + MySQL) + Nginx  | Simplicity and speed to ship; not ECS/Lambda as originally sketched. |
@@ -125,7 +118,6 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 | **Card generation**    | LangChain + structured outputs → typed card payloads       | Parseable, validated outputs.                                        |
 | **Image handling**     | Images from slides packed into `.apkg` with media mapping  | Anki Legacy 2 expectations (see `../engineering/anki/`).             |
 | **Local S3 testing**   | LocalStack (optional Docker profile) + `STORAGE_DRIVER=s3` | Parity with S3 API without AWS in dev.                               |
-
 
 ## Open Questions (post–v1)
 
@@ -147,4 +139,3 @@ A web app that converts PDF lecture slides into ready-to-import Anki flashcard d
 - Multiple export formats
 - Fallback AI provider
 - Batch upload (multiple lectures at once)
-

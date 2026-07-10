@@ -88,7 +88,7 @@ Back template:
 
 ```html
 {{cloze:Text}}
-<br>
+<br />
 {{Extra}}
 ```
 
@@ -103,13 +103,8 @@ Unlike standard note types (which generate cards based on templates), cloze card
 ### Per-Card Conditional Content
 
 ```html
-{{cloze:Text}}
-{{#c1}}
-    Hint for card 1: {{Hint1}}
-{{/c1}}
-{{#c2}}
-    Hint for card 2: {{Hint2}}
-{{/c2}}
+{{cloze:Text}} {{#c1}} Hint for card 1: {{Hint1}} {{/c1}} {{#c2}} Hint for card
+2: {{Hint2}} {{/c2}}
 ```
 
 ## Rendering Algorithm
@@ -174,13 +169,13 @@ To determine how many cards a cloze note will generate:
 
 ```javascript
 function countClozeCards(text) {
-    const nums = new Set();
-    const regex = /\{\{c(\d+)::/g;
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-        nums.add(parseInt(match[1]));
-    }
-    return nums.size;
+  const nums = new Set();
+  const regex = /\{\{c(\d+)::/g;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    nums.add(parseInt(match[1]));
+  }
+  return nums.size;
 }
 ```
 
@@ -223,4 +218,3 @@ Each shape (or group of shapes) generates one card.
 - Validate: cloze numbers are sequential starting from 1 (warn if gaps)
 - Support `{{cloze:FieldName}}` in template rendering
 - Support `{{type:cloze:Text}}` for type-in-answer cloze
-

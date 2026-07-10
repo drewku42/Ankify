@@ -15,7 +15,6 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 
 ## Architecture (actually shipped vs older docs)
 
-
 | Piece                 | Reality (shipped)                                     | Note                                               |
 | --------------------- | ----------------------------------------------------- | -------------------------------------------------- |
 | Frontend              | **Vercel**, `ankify.io`                               | `VITE_API_URL=https://api.ankify.io` in Vercel env |
@@ -24,13 +23,11 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 | Database              | **MySQL on same EC2** (or local Docker for dev)       | Prisma                                             |
 | PDF / exports storage | `**STORAGE_DRIVER=local`** on disk (`storage/` paths) | S3 optional later                                  |
 
-
 `[BUSINESS_CONTEXT.md](../business/BUSINESS_CONTEXT.md)` is updated for **v1 shipped** (Vercel + EC2). Older “future infra” sketches in other notes may still mention ECS/Lambda — production is **not** that split.
 
 ---
 
 ## Monorepo layout
-
 
 | Path         | Stack                                                                | Package manager |
 | ------------ | -------------------------------------------------------------------- | --------------- |
@@ -63,7 +60,6 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 
 ### Backend (`backend/.env`)
 
-
 | Var                 | Purpose                                                                                                             |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL`      | MySQL connection string                                                                                             |
@@ -75,23 +71,18 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 | `STORAGE_LOCAL_DIR` | Storage root (default `storage` relative to backend cwd; use absolute path on EC2 if needed)                        |
 | `NODE_ENV`          | `production` in prod                                                                                                |
 
-
 ### AI server (`ai-server/.env`)
-
 
 | Var              | Purpose                                                                                                                                                    |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `OPENAI_API_KEY` | Required                                                                                                                                                   |
 | `CORS_ORIGINS`   | **Comma-separated** URLs, e.g. `https://ankify.io,https://api.ankify.io` — **not** JSON; `list[str]` in Pydantic from `.env` used to JSON-decode and crash |
 
-
 ### Frontend (Vercel)
-
 
 | Var            | Purpose                                                                                  |
 | -------------- | ---------------------------------------------------------------------------------------- |
 | `VITE_API_URL` | `https://api.ankify.io` (no trailing slash); local dev omits or uses `/api` + Vite proxy |
-
 
 ---
 
@@ -119,22 +110,19 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 
 ## Useful references in-repo
 
-
-| Doc                                             | Contents                                             |
-| ----------------------------------------------- | ---------------------------------------------------- |
-| `[README.md](../../README.md)`                              | Quick start, ports                                   |
-| `[BUSINESS_CONTEXT.md](../business/BUSINESS_CONTEXT.md)`    | Product scope, risks (infra section may be outdated) |
-| `[TODO-ROADMAP.md](TODO-ROADMAP.md)`                        | Backlog, pricing notes, ops reminders                |
-| `[NEXT_SESSION.md](NEXT_SESSION.md)`                        | Shorter handoff duplicate of roadmap + pricing       |
-| `[anki/](anki/)`                                            | Anki / `.apkg` technical reference                   |
-| `[Knowledge Index](../INDEX.md)`                             | Master table of contents for all docs                |
-| `[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)`               | Pre-merge + EC2 + Vercel steps; Prisma/`dist`/PM2     |
-
+| Doc                                                      | Contents                                             |
+| -------------------------------------------------------- | ---------------------------------------------------- |
+| `[README.md](../../README.md)`                           | Quick start, ports                                   |
+| `[BUSINESS_CONTEXT.md](../business/BUSINESS_CONTEXT.md)` | Product scope, risks (infra section may be outdated) |
+| `[TODO-ROADMAP.md](TODO-ROADMAP.md)`                     | Backlog, pricing notes, ops reminders                |
+| `[NEXT_SESSION.md](NEXT_SESSION.md)`                     | Shorter handoff duplicate of roadmap + pricing       |
+| `[anki/](anki/)`                                         | Anki / `.apkg` technical reference                   |
+| `[Knowledge Index](../INDEX.md)`                         | Master table of contents for all docs                |
+| `[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)`           | Pre-merge + EC2 + Vercel steps; Prisma/`dist`/PM2    |
 
 ---
 
 ## Where to change what
-
 
 | Task                               | Where                                      |
 | ---------------------------------- | ------------------------------------------ |
@@ -145,7 +133,6 @@ Web app for **med / PA students**: upload **lecture PDFs**, get **AI-generated A
 | Frontend API base URL              | `frontend/src/config.ts` (`VITE_API_URL`)  |
 | DB schema                          | `backend/prisma/schema.prisma`             |
 
-
 ---
 
-*Add to this file if you discover new production footguns — future agents will thank you.*
+_Add to this file if you discover new production footguns — future agents will thank you._

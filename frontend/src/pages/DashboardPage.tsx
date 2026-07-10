@@ -10,9 +10,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; className: string }> = {
     draft: { label: "Draft", className: "bg-muted text-muted-foreground" },
-    uploaded: { label: "Ready", className: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
-    generating: { label: "Generating...", className: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300" },
-    ready: { label: "Complete", className: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" },
+    uploaded: {
+      label: "Ready",
+      className:
+        "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+    },
+    generating: {
+      label: "Generating...",
+      className:
+        "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+    },
+    ready: {
+      label: "Complete",
+      className:
+        "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+    },
     error: { label: "Error", className: "bg-destructive/10 text-destructive" },
   };
   const { label, className } = map[status] || {

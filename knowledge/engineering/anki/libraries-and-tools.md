@@ -13,28 +13,28 @@
 Creates .apkg files with custom fields and templates. Works in both Node.js and browser (webpack).
 
 ```typescript
-import { APKG } from 'anki-apkg';
+import { APKG } from "anki-apkg";
 
 const apkg = new APKG({
-    name: 'VocabularyBuilder',
-    card: {
-        fields: ['word', 'meaning', 'usage'],
-        template: {
-            question: '{{word}}',
-            answer: `
+  name: "VocabularyBuilder",
+  card: {
+    fields: ["word", "meaning", "usage"],
+    template: {
+      question: "{{word}}",
+      answer: `
                 <div>{{word}}</div>
                 <hr>
                 <div>{{meaning}}</div>
                 <div>{{usage}}</div>
-            `
-        },
-        styleText: '.card { text-align: center; }'
-    }
+            `,
+    },
+    styleText: ".card { text-align: center; }",
+  },
 });
 
 apkg.addCard({
-    timestamp: Date.now(),
-    content: ['hello', 'greeting', 'Hello, how are you?']
+  timestamp: Date.now(),
+  content: ["hello", "greeting", "Hello, how are you?"],
 });
 
 // Node.js
@@ -45,10 +45,11 @@ const blob = await apkg.save(); // then use file-saver or URL.createObjectURL
 ```
 
 **Media support:**
+
 ```typescript
-apkg.addMedia('unicorn.gif', bufferData);
+apkg.addMedia("unicorn.gif", bufferData);
 apkg.addCard({
-    content: ['What is this?', '<img src="unicorn.gif" />']
+  content: ["What is this?", '<img src="unicorn.gif" />'],
 });
 ```
 
@@ -63,10 +64,10 @@ apkg.addCard({
 Older but widely used. Simpler API, limited to Front/Back fields by default.
 
 ```javascript
-import AnkiExport from 'anki-apkg-export';
+import AnkiExport from "anki-apkg-export";
 
-const apkg = new AnkiExport('My Deck');
-apkg.addCard('front of card', 'back of card', { tags: ['tag1'] });
+const apkg = new AnkiExport("My Deck");
+apkg.addCard("front of card", "back of card", { tags: ["tag1"] });
 
 const zip = await apkg.save();
 // zip is a Blob in browser, Buffer in Node
@@ -88,7 +89,7 @@ Fork of anki-apkg-export with custom template variable support (frontside, backs
 SQLite compiled to WebAssembly. Required by all browser-based APKG generators. Runs a full SQLite engine in the browser.
 
 ```javascript
-import initSqlJs from 'sql.js';
+import initSqlJs from "sql.js";
 
 const SQL = await initSqlJs();
 const db = new SQL.Database();
@@ -104,14 +105,14 @@ const data = db.export(); // Uint8Array of SQLite file
 Creates ZIP archives in the browser. Used to package the SQLite DB + media into .apkg.
 
 ```javascript
-import JSZip from 'jszip';
+import JSZip from "jszip";
 
 const zip = new JSZip();
-zip.file('collection.anki21', sqliteData, { compression: 'DEFLATE' });
-zip.file('media', JSON.stringify(mediaMapping));
-zip.file('0', imageBuffer);
+zip.file("collection.anki21", sqliteData, { compression: "DEFLATE" });
+zip.file("media", JSON.stringify(mediaMapping));
+zip.file("0", imageBuffer);
 
-const blob = await zip.generateAsync({ type: 'blob' });
+const blob = await zip.generateAsync({ type: "blob" });
 ```
 
 ### file-saver (Utility)
@@ -121,8 +122,8 @@ const blob = await zip.generateAsync({ type: 'blob' });
 Triggers file download in the browser:
 
 ```javascript
-import { saveAs } from 'file-saver';
-saveAs(blob, 'my-deck.apkg');
+import { saveAs } from "file-saver";
+saveAs(blob, "my-deck.apkg");
 ```
 
 ### yanki-connect (AnkiConnect Client)
@@ -132,18 +133,18 @@ saveAs(blob, 'my-deck.apkg');
 Fully-typed TypeScript client for the AnkiConnect API. Universal (browser + Node).
 
 ```typescript
-import { YankiConnect } from 'yanki-connect';
+import { YankiConnect } from "yanki-connect";
 
 const client = new YankiConnect();
 
 const decks = await client.deck.deckNames();
 const noteId = await client.note.addNote({
-    note: {
-        deckName: 'Default',
-        modelName: 'Basic',
-        fields: { Front: 'question', Back: 'answer' },
-        tags: ['generated']
-    }
+  note: {
+    deckName: "Default",
+    modelName: "Basic",
+    fields: { Front: "question", Back: "answer" },
+    tags: ["generated"],
+  },
 });
 ```
 
@@ -198,6 +199,7 @@ package.write_to_file('output.apkg')
 ```
 
 **Key features:**
+
 - Custom models with arbitrary fields and templates
 - Multiple card types per model
 - Cloze deletion support via `genanki.CLOZE_MODEL`
@@ -206,6 +208,7 @@ package.write_to_file('output.apkg')
 - Can write to local Anki collection (inside add-on context)
 
 **GUID handling:**
+
 ```python
 class MyNote(genanki.Note):
     @property
@@ -232,6 +235,7 @@ User must install the AnkiConnect add-on (code: `2055492159`) and have Anki runn
 ```
 
 Response:
+
 ```json
 {
     "result": ...,
@@ -351,33 +355,35 @@ The web app should detect whether AnkiConnect is available and gracefully degrad
 
 ### For a Browser-Based Web App
 
-| Purpose | Library | Why |
-|---------|---------|-----|
-| **APKG Export** | `anki-apkg` | TypeScript, custom fields, active |
-| **SQLite in Browser** | `sql.js` | Required for APKG generation |
-| **ZIP Generation** | `jszip` | Mature, well-supported |
-| **File Download** | `file-saver` | Simple download trigger |
-| **AnkiConnect Client** | `yanki-connect` | Full TypeScript types |
-| **CSV Parsing** | `papaparse` | Robust CSV parser for imports |
+| Purpose                | Library         | Why                               |
+| ---------------------- | --------------- | --------------------------------- |
+| **APKG Export**        | `anki-apkg`     | TypeScript, custom fields, active |
+| **SQLite in Browser**  | `sql.js`        | Required for APKG generation      |
+| **ZIP Generation**     | `jszip`         | Mature, well-supported            |
+| **File Download**      | `file-saver`    | Simple download trigger           |
+| **AnkiConnect Client** | `yanki-connect` | Full TypeScript types             |
+| **CSV Parsing**        | `papaparse`     | Robust CSV parser for imports     |
 
 ### For a Backend (If Needed)
 
-| Purpose | Library | Why |
-|---------|---------|-----|
-| **APKG Generation** | `genanki` (Python) | Most mature, widely used |
-| **CSV Processing** | Built-in `csv` module | Standard library |
+| Purpose             | Library               | Why                      |
+| ------------------- | --------------------- | ------------------------ |
+| **APKG Generation** | `genanki` (Python)    | Most mature, widely used |
+| **CSV Processing**  | Built-in `csv` module | Standard library         |
 
 ### Build-or-Buy Decision
 
 **Decided:** Use `genanki` (Python) on the AI server for `.apkg` generation.
 
 Rationale:
+
 1. **`genanki`** is the most mature library (2.5k+ GitHub stars), handles cloze + media + custom templates natively
 2. The AI server is already Python (LangChain + structured outputs), so `genanki` runs in the same process — no cross-language serialization needed
 3. Card generation and `.apkg` packaging happen on the same server, simplifying the pipeline: PDF → GPT-4o Vision → structured card data → `genanki` → `.apkg` → S3
 4. The JS libraries (`anki-apkg`, `anki-apkg-export`) remain useful as reference implementations for understanding the format, but are not used in production
 
 **Not in v1:**
+
 - AnkiConnect live-sync (requires user to have Anki desktop running — too much friction for v1)
 - CSV export (`.apkg` only for now)
 - Browser-side `.apkg` generation (server-side via `genanki` instead)

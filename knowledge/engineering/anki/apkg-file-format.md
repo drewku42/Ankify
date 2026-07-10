@@ -14,7 +14,6 @@ There are two package types:
 
 ## Format Versions
 
-
 | Feature              | Legacy 1             | Legacy 2 (target)    | Latest                          |
 | -------------------- | -------------------- | -------------------- | ------------------------------- |
 | **Database file**    | `collection.anki2`   | `collection.anki21`  | `collection.anki21b`            |
@@ -23,7 +22,6 @@ There are two package types:
 | **ZIP compression**  | deflate              | deflate              | store (db compressed with zstd) |
 | **Config storage**   | JSON in TEXT columns | JSON in TEXT columns | Protobuf in BLOB columns        |
 | **Introduced**       | 2012 (Anki 2.0)      | 2018 (Anki 2.1)      | 2020-2022 (Anki 2.1.50+)        |
-
 
 **We should target Legacy 2 (schema v11)** for maximum compatibility. Desktop Anki internally upgrades to v18 but downgrades back to v11 for `.apkg` exports. v11 is the correct target for any tool that reads/writes Anki packages.
 
@@ -281,26 +279,33 @@ For our web app to **export** decks:
 1. Create a SQLite database in memory (using `sql.js` for browser)
 2. Create all 5 tables with the schema above
 3. Insert the `col` row with:
-  - `models` JSON containing all note types used
-  - `decks` JSON containing the target deck(s)
-  - `dconf` JSON with default deck config
-  - `conf` JSON with default collection config
+
+- `models` JSON containing all note types used
+- `decks` JSON containing the target deck(s)
+- `dconf` JSON with default deck config
+- `conf` JSON with default collection config
+
 4. For each note, insert into `notes` with:
-  - Generate unique `id` (epoch ms)
-  - Generate `guid` (base91 random, 10 chars)
-  - Set `mid` to the note type ID
-  - Join field values with `\x1f` into `flds`
-  - Compute `csum` as integer from first 8 hex chars of SHA1 of stripped first field
-  - Set `sfld` to the HTML-stripped first field value
+
+- Generate unique `id` (epoch ms)
+- Generate `guid` (base91 random, 10 chars)
+- Set `mid` to the note type ID
+- Join field values with `\x1f` into `flds`
+- Compute `csum` as integer from first 8 hex chars of SHA1 of stripped first field
+- Set `sfld` to the HTML-stripped first field value
+
 5. For each note × card type combination, insert into `cards` with:
-  - `nid` = note id, `did` = deck id, `ord` = template index
-  - For new cards: `type=0`, `queue=0`, `due=<position>`, `ivl=0`, `factor=0`
+
+- `nid` = note id, `did` = deck id, `ord` = template index
+- For new cards: `type=0`, `queue=0`, `due=<position>`, `ivl=0`, `factor=0`
+
 6. Create the `media` JSON mapping
 7. Package everything into a ZIP archive:
-  - Add `collection.anki21` (deflate compressed)
-  - Add `collection.anki2` (compatibility stub — can be minimal/empty db)
-  - Add `media` JSON file
-  - Add numbered media files
+
+- Add `collection.anki21` (deflate compressed)
+- Add `collection.anki2` (compatibility stub — can be minimal/empty db)
+- Add `media` JSON file
+- Add numbered media files
 
 ## Checksum Calculation
 

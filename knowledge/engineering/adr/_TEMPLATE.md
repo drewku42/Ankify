@@ -1,25 +1,23 @@
 # ADR-000 — Title
 
-
 | Field          | Value      |
 | -------------- | ---------- |
 | **Status**     | `proposed` |
 | **Date**       | YYYY-MM-DD |
 | **Supersedes** | —          |
 
-
 ## Context
 
-*What situation or problem prompted this decision?*
+_What situation or problem prompted this decision?_
 
 ## Decision
 
-*What did we decide, concretely?*
+_What did we decide, concretely?_
 
 ## Alternatives considered
 
-*What else did we evaluate, and why did we reject it?*
+_What else did we evaluate, and why did we reject it?_
 
 ## Consequences
 
-*What are the trade-offs? What does this make easier or harder going forward?*
+_What are the trade-offs? What does this make easier or harder going forward?_
