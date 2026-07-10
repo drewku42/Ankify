@@ -55,7 +55,10 @@ jobs:
 
       - name: Install ai-server deps
         working-directory: ai-server
-        run: poetry install
+        # --no-root: install dependencies only, don't package the ai-server
+        # itself (its pyproject references a README that doesn't exist, and we
+        # only need the deps to run uvicorn).
+        run: poetry install --no-root
 
       - name: Install backend deps
         working-directory: backend
