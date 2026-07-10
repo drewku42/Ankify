@@ -28,5 +28,7 @@ module.exports = {
     `prettier --write ${filenames.map((f) => `'${f}'`).join(" ")}`,
     eslintFixIn("backend", filenames),
   ],
-  "**/*.{json,md,css}": ["prettier --write"],
+  // Markdown is intentionally excluded — docs are hand-written prose and are
+  // in .prettierignore, so Prettier neither formats nor gates on them.
+  "**/*.{json,css}": ["prettier --write"],
 };

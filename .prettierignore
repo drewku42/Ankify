@@ -13,3 +13,6 @@ poetry.lock
 ai-server/**
 **/*.apkg
 example-slides/**
+
+# Docs are hand-written prose — don't let Prettier reformat or gate on them.
+**/*.md
