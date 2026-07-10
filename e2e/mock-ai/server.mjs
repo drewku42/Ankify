@@ -122,7 +122,11 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && pathname === "/openapi.json") {
       // Real server auto-generates a full OpenAPI schema; backend's
       // /health/ai only checks res.ok, so a minimal stub is sufficient.
-      sendJson(res, 200, { openapi: "3.1.0", info: { title: "mock-ai" }, paths: {} });
+      sendJson(res, 200, {
+        openapi: "3.1.0",
+        info: { title: "mock-ai" },
+        paths: {},
+      });
       return;
     }
 
@@ -155,10 +159,19 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    sendJson(res, 404, { error: "Not found", code: "MOCK_AI_NOT_FOUND", path: pathname });
+    sendJson(res, 404, {
+      error: "Not found",
+      code: "MOCK_AI_NOT_FOUND",
+      path: pathname,
+    });
   } catch (err) {
-    process.stderr.write(`[mock-ai] error handling ${req.method} ${pathname}: ${err.stack || err}\n`);
-    sendJson(res, 500, { error: "Mock AI server error", code: "MOCK_AI_ERROR" });
+    process.stderr.write(
+      `[mock-ai] error handling ${req.method} ${pathname}: ${err.stack || err}\n`,
+    );
+    sendJson(res, 500, {
+      error: "Mock AI server error",
+      code: "MOCK_AI_ERROR",
+    });
   }
 });
 

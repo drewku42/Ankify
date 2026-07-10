@@ -14,7 +14,11 @@ const MYSQL_PORT = 3306;
 const READY_TIMEOUT_MS = 60_000;
 const POLL_INTERVAL_MS = 1_000;
 
-function isPortReachable(host: string, port: number, timeoutMs = 2_000): Promise<boolean> {
+function isPortReachable(
+  host: string,
+  port: number,
+  timeoutMs = 2_000,
+): Promise<boolean> {
   return new Promise((resolve) => {
     const socket = new net.Socket();
     const onDone = (result: boolean) => {
