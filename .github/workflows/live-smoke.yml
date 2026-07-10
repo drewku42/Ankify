@@ -1,0 +1,99 @@
+name: Live Smoke
+
+# Real-pipeline canary: real Python ai-server + real OpenAI generation on a
+# single image. This is the only automated path that spends money, so it
+# must NEVER run on pull_request (a fork PR could otherwise exfiltrate
+# OPENAI_API_KEY). Only push-to-main and manual dispatch trigger it.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: live-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  live-smoke:
+    name: Live smoke (real OpenAI)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ankify_root
+          MYSQL_DATABASE: ankify
+          MYSQL_USER: ankify
+          MYSQL_PASSWORD: ankify_dev
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uankify -pankify_dev"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poppler-utils (pdf2image dependency)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Install ai-server deps
+        working-directory: ai-server
+        run: poetry install
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
+
+      - name: Generate Prisma client
+        working-directory: backend
+        run: npx prisma generate
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Install e2e deps
+        working-directory: e2e
+        run: npm ci
+
+      - name: Install Playwright browser
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      # LIVE_SMOKE=1 switches playwright.config.ts onto the real ai-server
+      # webServer entry (port 8000, real OpenAI) and un-ignores
+      # live-smoke.spec.ts. CI=true => reuseExistingServer is off, so all
+      # webServers (real ai-server + backend + frontend) start fresh.
+      # globalSetup finds MySQL already up (service container) and no-ops.
+      - name: Run live smoke test
+        working-directory: e2e
+        env:
+          LIVE_SMOKE: "1"
+          CI: "true"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: npx playwright test tests/live-smoke.spec.ts
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-smoke-playwright-report
+          path: e2e/playwright-report/
+          retention-days: 7

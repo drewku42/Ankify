@@ -123,13 +123,11 @@ router.post(
         "url=",
         `${config.aiServer.url}/generate/deck`,
       );
-      res
-        .status(500)
-        .json({
-          error: "Card generation failed",
-          code: "GENERATION_FAILED",
-          detail,
-        });
+      res.status(500).json({
+        error: "Card generation failed",
+        code: "GENERATION_FAILED",
+        detail,
+      });
     }
   }),
 );
@@ -217,13 +215,11 @@ router.post(
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
       console.error("Export failed:", message);
-      res
-        .status(500)
-        .json({
-          error: "Export failed",
-          code: "EXPORT_FAILED",
-          detail: message,
-        });
+      res.status(500).json({
+        error: "Export failed",
+        code: "EXPORT_FAILED",
+        detail: message,
+      });
     }
   }),
 );
