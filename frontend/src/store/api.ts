@@ -75,18 +75,17 @@ export const api = createApi({
       providesTags: (_result, _err, id) => [{ type: "Deck" as const, id }],
     }),
 
-    createDeck: builder.mutation<
-      { deck: Deck },
-      { name: string; file?: File }
-    >({
-      query: ({ name, file }) => {
-        const formData = new FormData();
-        formData.append("name", name);
-        if (file) formData.append("file", file);
-        return { url: "/decks", method: "POST", body: formData };
+    createDeck: builder.mutation<{ deck: Deck }, { name: string; file?: File }>(
+      {
+        query: ({ name, file }) => {
+          const formData = new FormData();
+          formData.append("name", name);
+          if (file) formData.append("file", file);
+          return { url: "/decks", method: "POST", body: formData };
+        },
+        invalidatesTags: ["DeckList"],
       },
-      invalidatesTags: ["DeckList"],
-    }),
+    ),
 
     updateDeck: builder.mutation<
       { deck: Deck },

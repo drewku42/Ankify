@@ -124,7 +124,11 @@ export default function DeckPage() {
 
   // Auto-trigger generation when landing on a deck with status "uploaded"
   useEffect(() => {
-    if (status === "uploaded" && deck?.sourceFileKey && !generationTriggered.current) {
+    if (
+      status === "uploaded" &&
+      deck?.sourceFileKey &&
+      !generationTriggered.current
+    ) {
       generationTriggered.current = true;
       generateDeck(id!).catch(() => {});
     }

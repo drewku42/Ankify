@@ -22,7 +22,7 @@ export const config = {
     clientSecret: optional("GOOGLE_CLIENT_SECRET", ""),
     callbackUrl: optional(
       "GOOGLE_CALLBACK_URL",
-      "http://localhost:3000/auth/google/callback"
+      "http://localhost:3000/auth/google/callback",
     ),
   },
 

@@ -36,7 +36,6 @@ If you **cannot** use the script, run the same steps **in that order** — do no
 
 ### After any Prisma schema change
 
-
 | Step                        | Why                                                                                         |
 | --------------------------- | ------------------------------------------------------------------------------------------- |
 | `npx prisma migrate deploy` | DB columns match migration history.                                                         |
@@ -44,9 +43,7 @@ If you **cannot** use the script, run the same steps **in that order** — do no
 | `npm run build`             | `dist/` matches `**src/`** (e.g. `createMany` must not reference removed fields).           |
 | `pm2 restart …`             | Running processes load the new `dist/` + new client.                                        |
 
-
 ### Symptom → likely cause
-
 
 | Symptom                                                             | Likely cause                                                                           |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
@@ -54,7 +51,6 @@ If you **cannot** use the script, run the same steps **in that order** — do no
 | `Unknown argument \`fieldName`on`create`/`createMany`               | Client **newer** than `**dist/`** — `**npm run build`** not run, or old process.       |
 | `The column … does not exist` but column was **dropped** on purpose | Client **older** than DB — `**prisma generate`** not run, or PM2 worker not restarted. |
 | `unhandledRejection` + Prisma                                       | Fix the underlying error; ensure route uses `**asyncHandler`** / proper `catch`.       |
-
 
 ---
 
@@ -108,4 +104,3 @@ Skipping any one of these after a schema + code change is how **local works** (y
 - `[AGENT.md](AGENT.md)` — architecture, env vars, Nginx timeouts, PM2.
 - `[deploy/deploy.sh](../../deploy/deploy.sh)` — automated EC2 steps.
 - Tickets — mark **shipped** and note any **deploy gotchas** in the ticket **Notes** section.
-

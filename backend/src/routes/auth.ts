@@ -40,19 +40,25 @@ if (config.google.clientId && config.google.clientSecret) {
         } catch (err) {
           done(err as Error);
         }
-      }
-    )
+      },
+    ),
   );
 }
 
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"], session: false })
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  }),
 );
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false, failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login",
+  }),
   (req: Request, res: Response) => {
     const user = req.user as { id: string } | undefined;
     if (!user) {
@@ -65,7 +71,7 @@ router.get(
     });
 
     res.redirect(`${config.corsOrigin}/auth/callback?token=${token}`);
-  }
+  },
 );
 
 router.get("/me", requireAuth, (req: Request, res: Response) => {
@@ -73,24 +79,27 @@ router.get("/me", requireAuth, (req: Request, res: Response) => {
 });
 
 if (process.env.NODE_ENV === "development") {
-  router.post("/dev-login", asyncHandler(async (_req: Request, res: Response) => {
-    const user = await prisma.user.upsert({
-      where: { googleId: "dev-user" },
-      update: {},
-      create: {
-        googleId: "dev-user",
-        email: "dev@ankify.local",
-        name: "Dev User",
-        avatar: null,
-      },
-    });
+  router.post(
+    "/dev-login",
+    asyncHandler(async (_req: Request, res: Response) => {
+      const user = await prisma.user.upsert({
+        where: { googleId: "dev-user" },
+        update: {},
+        create: {
+          googleId: "dev-user",
+          email: "dev@ankify.local",
+          name: "Dev User",
+          avatar: null,
+        },
+      });
 
-    const token = jwt.sign({ userId: user.id }, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn,
-    });
+      const token = jwt.sign({ userId: user.id }, config.jwt.secret, {
+        expiresIn: config.jwt.expiresIn,
+      });
 
-    res.json({ token, user });
-  }));
+      res.json({ token, user });
+    }),
+  );
 }
 
 export default router;

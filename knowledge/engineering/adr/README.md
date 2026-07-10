@@ -12,11 +12,11 @@ ADR-<number>-<short-slug>.md
 
 ## Statuses
 
-| Status | Meaning |
-|--------|---------|
-| `accepted` | Decision is in effect |
+| Status       | Meaning                              |
+| ------------ | ------------------------------------ |
+| `accepted`   | Decision is in effect                |
 | `superseded` | Replaced by a newer ADR (link to it) |
-| `proposed` | Under discussion, not yet committed |
+| `proposed`   | Under discussion, not yet committed  |
 
 ## Creating a new ADR
 

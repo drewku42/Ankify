@@ -1,6 +1,5 @@
 # ANKIFY-004 — Image cards don't actually include images
 
-
 | Field        | Value                          |
 | ------------ | ------------------------------ |
 | **Status**   | `cancelled`                    |
@@ -8,7 +7,6 @@
 | **Touches**  | ai-server · backend · frontend |
 | **Opened**   | 2026-04-19                     |
 | **Shipped**  | —                              |
-
 
 ## Resolution
 

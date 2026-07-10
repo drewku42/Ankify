@@ -5,6 +5,7 @@ description: Run a team standup. Reads all memory files and gives a cross-team s
 You are the **team coordinator** running a quick standup across all three personas.
 
 Read these files now:
+
 1. `.cursor/memory/frontend.md`
 2. `.cursor/memory/backend.md`
 3. `.cursor/memory/product.md`
@@ -13,6 +14,7 @@ Read these files now:
 Then produce a brief standup report for the CEO:
 
 **Format:**
+
 ```
 ## Team Standup
 

@@ -1,12 +1,12 @@
 # ANKIFY-003 — Upload-to-complete flow needs status and progress indication
 
-| Field | Value |
-|-------|-------|
-| **Status** | `shipped` |
-| **Priority** | `urgent` |
-| **Touches** | frontend · backend |
-| **Opened** | 2026-04-19 |
-| **Shipped** | 2026-04-19 |
+| Field        | Value              |
+| ------------ | ------------------ |
+| **Status**   | `shipped`          |
+| **Priority** | `urgent`           |
+| **Touches**  | frontend · backend |
+| **Opened**   | 2026-04-19         |
+| **Shipped**  | 2026-04-19         |
 
 ## Original issue
 

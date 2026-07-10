@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+.next
+*.lock
+yarn.lock
+package-lock.json
+poetry.lock
+**/prisma/migrations/**
+ai-server/**
+**/*.apkg
+example-slides/**

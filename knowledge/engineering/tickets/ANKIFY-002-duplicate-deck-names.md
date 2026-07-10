@@ -1,6 +1,5 @@
 # ANKIFY-002 — Prevent duplicate deck names from corrupting state
 
-
 | Field        | Value              |
 | ------------ | ------------------ |
 | **Status**   | `shipped`          |
@@ -8,7 +7,6 @@
 | **Touches**  | backend · frontend |
 | **Opened**   | 2026-04-19         |
 | **Shipped**  | 2026-04-19         |
-
 
 ## Original issue
 

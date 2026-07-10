@@ -6,9 +6,9 @@
 
 ## Problem
 
-Ankify has the *front half* of a software development lifecycle (a ticket
+Ankify has the _front half_ of a software development lifecycle (a ticket
 system in `knowledge/engineering/tickets/`, ADRs, a release checklist) but
-none of the *back half*: there is no CI (`.github/workflows/` does not
+none of the _back half_: there is no CI (`.github/workflows/` does not
 exist), no Prettier, no pre-commit hooks, and effectively no tests
 (frontend: zero; ai-server: two ad-hoc scripts; backend: none).
 
@@ -77,7 +77,7 @@ HTML/markdown handling). Not for coverage's sake; added where it earns its
 keep.
 
 **End-to-end — Playwright (the emphasis).** Lives in a top-level `e2e/`
-directory. Drives the *real* UI against the *real* backend + MySQL, with the
+directory. Drives the _real_ UI against the _real_ backend + MySQL, with the
 AI server replaced by a deterministic **mock**. Baseline scenarios:
 
 - Auth via dev-login (dev-only endpoint).
@@ -92,7 +92,7 @@ point it at a tiny standalone mock server that returns canned cards for the
 generate call. No changes to production code — the mock is a test fixture.
 
 **Live smoke — one real generation.** A single test/script uploads a
-single-image (one-page) PDF and runs the *real* pipeline (real ai-server +
+single-image (one-page) PDF and runs the _real_ pipeline (real ai-server +
 OpenAI), asserting cards come back. This is the only automated path that
 spends money. It is cheap (~1 image, ~10s, pennies) and runs on
 push-to-`main` + manual `workflow_dispatch` — not on every PR.

@@ -20,6 +20,7 @@ for image in images:
 ```
 
 Two problems compound:
+
 1. `convert_from_path(dpi=200)` returns **every** page decoded in memory
    simultaneously (~9 MB per page raw → ~1.8 GB for a 200-slide deck).
 2. It then builds a **second** full copy as a list of base64 strings.
@@ -30,10 +31,10 @@ upload drove the process to ~3 GB → the kernel OOM-killer fired → with no sw
 headroom the OS wedged → **prod outage on 2026-07-06** (login hung; box `impaired` for
 6+ hours until a manual reboot).
 
-Important scope note: OpenAI is *already* called in **batches of 10 slides** per request
+Important scope note: OpenAI is _already_ called in **batches of 10 slides** per request
 (`card_generator.py`, `BATCH_SIZE = 10`) for context-window and quality reasons. That
 batching is correct and **out of scope** here. The bug is purely in the rasterization
-stage holding the whole deck in RAM at once — it is *not* "process fewer slides."
+stage holding the whole deck in RAM at once — it is _not_ "process fewer slides."
 
 ## Decision
 
@@ -52,7 +53,7 @@ batch consumer (`generate_cards`).
 
 ## Alternatives considered
 
-- **Scale up the instance (more RAM).** Rejected as the *primary* fix. The memory pattern
+- **Scale up the instance (more RAM).** Rejected as the _primary_ fix. The memory pattern
   is unbounded, so more RAM just **moves the cliff** — a big enough deck or enough
   concurrent uploads blows past any fixed ceiling. It also adds ~$30/mo ongoing to a
   zero-revenue app, cutting against the very unit-economics concern that motivates the
@@ -71,17 +72,20 @@ batch consumer (`generate_cards`).
 ## Consequences
 
 **Better**
+
 - The OOM failure mode is removed **at the cause**: memory is bounded regardless of deck size.
 - Same render pass → no meaningful latency change.
 - The fix lives in the same file we'll touch next for the cheap-model swap — one trip.
 
 **Worse / neutral**
+
 - Relies on temp disk space during a render (trivial on this box).
 - The base64 slide list is still fully materialized — acceptable at current deck sizes
   (tens of MB); it's the trigger to revisit the full-streaming generator if decks or
   concurrency grow.
 
 **Follow-ups (tracked separately, not part of this ADR)**
+
 - Add a 4 GB swapfile as a spike safety net.
 - CloudWatch alarm → EC2 auto-recovery, and the PM2 systemd startup unit, so a wedged box
   self-heals instead of needing a manual 6am reboot.
@@ -94,7 +98,7 @@ Reproduced and fixed under test (`ai-server/tests/test_pdf_processor.py`):
 - **Before:** a 36-page deck peaked at ~1.4 GB, growing ~11 MB/page — i.e. a
   ~160-page lecture would have hit ~6 GB and OOM-killed the 3.8 GB box. This is the
   outage, reproduced in miniature.
-- **After:** peak is **bounded** at ~200–220 MB *regardless of deck size* (measured
+- **After:** peak is **bounded** at ~200–220 MB _regardless of deck size_ (measured
   flat from 24 to 160 pages).
 - **Output unchanged:** the streamed JPEGs are **byte-identical** (matching MD5) to the
   old all-at-once render on real lecture PDFs (a 50-page and a 1-page deck), so the cards
@@ -102,6 +106,6 @@ Reproduced and fixed under test (`ai-server/tests/test_pdf_processor.py`):
 
 ## Lesson
 
-The instinct "just give it more memory" treats a symptom. The real question was *why does
-memory grow without limit* — and the answer was holding the whole deck in RAM at once, not
+The instinct "just give it more memory" treats a symptom. The real question was _why does
+memory grow without limit_ — and the answer was holding the whole deck in RAM at once, not
 the amount of RAM. Bounding the resource beats raising the ceiling.

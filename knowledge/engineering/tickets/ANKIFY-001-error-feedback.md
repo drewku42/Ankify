@@ -1,6 +1,5 @@
 # ANKIFY-001 — Surface error feedback to users on the frontend
 
-
 | Field        | Value              |
 | ------------ | ------------------ |
 | **Status**   | `shipped`          |
@@ -8,7 +7,6 @@
 | **Touches**  | frontend · backend |
 | **Opened**   | 2026-04-19         |
 | **Shipped**  | 2026-04-19         |
-
 
 ## Original issue
 

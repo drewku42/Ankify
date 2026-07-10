@@ -1,12 +1,12 @@
 # ANKIFY-000 — Title
 
-| Field | Value |
-|-------|-------|
-| **Status** | `open` |
-| **Priority** | `medium` |
-| **Touches** | frontend · backend · ai-server |
-| **Opened** | YYYY-MM-DD |
-| **Shipped** | — |
+| Field        | Value                          |
+| ------------ | ------------------------------ |
+| **Status**   | `open`                         |
+| **Priority** | `medium`                       |
+| **Touches**  | frontend · backend · ai-server |
+| **Opened**   | YYYY-MM-DD                     |
+| **Shipped**  | —                              |
 
 ## Original issue
 

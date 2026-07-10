@@ -64,9 +64,15 @@ app.use(
     if (err instanceof MulterError) {
       const multerMessages: Record<string, { msg: string; code: string }> = {
         LIMIT_FILE_SIZE: { msg: "File is too large", code: "FILE_TOO_LARGE" },
-        LIMIT_UNEXPECTED_FILE: { msg: "Unexpected file field", code: "INVALID_FILE_TYPE" },
+        LIMIT_UNEXPECTED_FILE: {
+          msg: "Unexpected file field",
+          code: "INVALID_FILE_TYPE",
+        },
       };
-      const mapped = multerMessages[err.code] ?? { msg: err.message, code: err.code };
+      const mapped = multerMessages[err.code] ?? {
+        msg: err.message,
+        code: err.code,
+      };
       res.status(400).json({ error: mapped.msg, code: mapped.code });
       return;
     }

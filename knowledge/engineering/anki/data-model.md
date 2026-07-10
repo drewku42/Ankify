@@ -28,7 +28,6 @@ Collection (1)
 
 Defines the schema for a category of notes.
 
-
 | Property    | Type    | Description                                       |
 | ----------- | ------- | ------------------------------------------------- |
 | `id`        | integer | Epoch milliseconds, unique identifier             |
@@ -39,9 +38,7 @@ Defines the schema for a category of notes.
 | `type`      | integer | `0` = standard, `1` = cloze                       |
 | `sortField` | integer | Index of field used for sorting in browser        |
 
-
 Each field definition:
-
 
 | Property | Type    | Description                                            |
 | -------- | ------- | ------------------------------------------------------ |
@@ -52,9 +49,7 @@ Each field definition:
 | `font`   | string  | Editor font name                                       |
 | `size`   | integer | Editor font size                                       |
 
-
 Each template (card type) definition:
-
 
 | Property | Type    | Description                                |
 | -------- | ------- | ------------------------------------------ |
@@ -64,11 +59,9 @@ Each template (card type) definition:
 | `afmt`   | string  | Back (answer) template HTML                |
 | `did`    | integer | Deck override (0 = use note's deck)        |
 
-
 ### Note
 
 The raw content from which cards are derived.
-
 
 | Property | Type    | Description                                                 |
 | -------- | ------- | ----------------------------------------------------------- |
@@ -83,13 +76,11 @@ The raw content from which cards are derived.
 | `flags`  | integer | Unused, always 0                                            |
 | `data`   | string  | Unused, always empty string                                 |
 
-
 **Critical**: The `flds` column stores ALL field values as a single string, separated by the unit separator character (`\x1f`, ASCII 31). The order matches the field order defined in the note type.
 
 ### Card
 
 A reviewable item. Generated automatically from a note + card type.
-
 
 | Property | Type    | Description                                                                                                                        |
 | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -111,9 +102,7 @@ A reviewable item. Generated automatically from a note + card type.
 | `flags`  | integer | Card flags (for colored markers)                                                                                                   |
 | `data`   | string  | Custom data (JSON, used by custom schedulers/FSRS)                                                                                 |
 
-
 ### Deck
-
 
 | Property    | Type    | Description                               |
 | ----------- | ------- | ----------------------------------------- |
@@ -124,9 +113,7 @@ A reviewable item. Generated automatically from a note + card type.
 | `conf`      | integer | Deck config/options group ID              |
 | `collapsed` | boolean | Whether collapsed in deck list            |
 
-
 ### Review Log
-
 
 | Property  | Type    | Description                                             |
 | --------- | ------- | ------------------------------------------------------- |
@@ -139,7 +126,6 @@ A reviewable item. Generated automatically from a note + card type.
 | `factor`  | integer | New ease factor                                         |
 | `time`    | integer | Review duration in milliseconds                         |
 | `type`    | integer | `0`=learn, `1`=review, `2`=relearn, `3`=filtered        |
-
 
 ## Key Relationships
 

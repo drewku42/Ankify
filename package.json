@@ -1,5 +1,11 @@
 {
-  "dependencies": {
-    "react-toastify": "^11.1.0"
+  "name": "ankify-root",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.5"
   }
 }

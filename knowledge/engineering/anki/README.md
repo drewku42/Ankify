@@ -4,7 +4,6 @@
 
 ## Documents
 
-
 | File                                                     | Purpose                                  | Key Topics                                                                                           |
 | -------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `[overview.md](./overview.md)`                           | Domain concepts and terminology          | Collection, Notes, Cards, Decks, Note Types, Tags, Fields                                            |
@@ -14,7 +13,6 @@
 | `[import-export.md](./import-export.md)`                 | Import/export formats and behaviors      | Text/CSV import, .apkg import, file headers, duplicate handling, media import, merge behavior        |
 | `[cloze-deletions.md](./cloze-deletions.md)`             | Cloze deletion mechanics                 | Syntax (`{{c1::text::hint}}`), rendering algorithm, nested clozes, Image Occlusion, card counting    |
 | `[libraries-and-tools.md](./libraries-and-tools.md)`     | Libraries and APIs for implementation    | JS/TS libs (anki-apkg, sql.js, jszip), Python (genanki), AnkiConnect API, tech stack recommendations |
-
 
 ## Quick Reference: Core Concepts
 
@@ -57,4 +55,3 @@ Deck                       A group of cards (nestable via :: separator)
 - genanki: [https://github.com/kerrickstaley/genanki](https://github.com/kerrickstaley/genanki)
 - AnkiConnect: [https://github.com/amikey/anki-connect](https://github.com/amikey/anki-connect)
 - anki-apkg (npm): [https://github.com/NdYAG/anki-apkg](https://github.com/NdYAG/anki-apkg)
-

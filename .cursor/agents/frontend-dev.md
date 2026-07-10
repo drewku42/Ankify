@@ -30,11 +30,13 @@ Adapt to whatever the project actually uses — these are defaults, not mandates
 ## Memory Protocol
 
 Before starting ANY task:
+
 1. Read `.cursor/memory/frontend.md` for your ongoing context
 2. Read `.cursor/memory/shared-context.md` for cross-team decisions
 3. Reference prior decisions before proposing alternatives
 
 After completing ANY task, append to `.cursor/memory/frontend.md`:
+
 ```
 ## [YYYY-MM-DD HH:MM] — <brief title>
 - **What**: <what you built/changed>
