@@ -64,3 +64,40 @@ ADRs live in `knowledge/engineering/adr/`. Use the template at `knowledge/engine
 - **Index**: `knowledge/INDEX.md` is the master table of contents
 - **Agent entry point**: `AGENTS.md` at repo root — the canonical "start here" for any AI agent
 - **All paths updated** across README, memory files, and internal docs
+
+## [2026-07-09] — Design system + SDLC/testing/CI infrastructure landed; prod redeployed
+
+### Design system (affects all frontend work)
+- **shadcn/ui + Tailwind v4** is now the frontend's design system (PR #4). Build UI from
+  `frontend/src/components/ui/*` + the `cn()` helper (`frontend/src/lib/utils.ts`). Nova preset,
+  neutral palette, tokens in `frontend/src/index.css`. `global.scss` is **deleted**; `sass` removed;
+  toasts are **sonner** (not react-toastify). Do NOT reintroduce ad-hoc SCSS — extend the token set.
+- New components: run `npx shadcn@latest add <name>` in `frontend/` (config in `components.json`).
+
+### SDLC + testing (affects every ticket from now on)
+- **Lifecycle is documented**: `knowledge/engineering/SDLC.md`. Every feature: ticket (extended
+  template) → build → **E2E test** → local pre-commit (Prettier+ESLint) → CI green → merge.
+- **E2E harness lives in `e2e/`** (Playwright, real stack + mock AI). Add a test per feature; mirror
+  the patterns in `e2e/tests/generate.spec.ts` (ESM `__dirname`, unique deck names per run because
+  the DB persists and rejects dup names). Run with `npx playwright test` from `e2e/`.
+- **CI (`.github/workflows/ci.yml`)** gates PRs on lint/typecheck + E2E (mock AI). **live-smoke.yml**
+  runs the real OpenAI pipeline on push-to-main only (never on PRs — secret safety).
+- **ESLint is now real** (flat configs in frontend/ + backend/; the old `lint` scripts were dead).
+  **Prettier** formats code/JSON/CSS but **not markdown** (docs are prose). Husky pre-commit runs
+  both on staged files.
+- Branch-protection enforcement is OFF (needs Org+Team for a private repo) — honor-system green.
+
+### Contract note for testers
+- Mock AI (`e2e/mock-ai/server.mjs`) must stay in sync with the real backend↔ai-server contract:
+  `POST /generate/deck` → `{deck:{cards:[{front,back,source_page,tags}], ...}, page_count,
+  processing_time_seconds}`. If that response shape changes on the backend/ai-server, update the mock.
+
+### Prod
+- `main` deployed to EC2 via `deploy/deploy.sh` (health-verified: api.ankify.io + ankify.io 200).
+  No schema changes this session. Frontend design system serves via **Vercel** (auto on push), not
+  the EC2 script.
+
+### Next (the revenue thread)
+- **Paywall + metering + rate-limit** is the top priority — it's simultaneously the monetization
+  path and the fix for the uncapped-LLM-proxy security hole. `User` model has **no** plan/usage
+  fields yet; that's where it starts. Pricing model not finalized (leaning freemium + metered cap).
