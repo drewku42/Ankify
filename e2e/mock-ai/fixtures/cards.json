@@ -1,0 +1,26 @@
+{
+  "cards": [
+    {
+      "front": "MOCK_CARD_1_FRONT",
+      "back": "MOCK_CARD_1_BACK",
+      "source_page": 1,
+      "tags": ["mock", "e2e"]
+    },
+    {
+      "front": "MOCK_CARD_2_FRONT",
+      "back": "MOCK_CARD_2_BACK",
+      "source_page": 2,
+      "tags": ["mock", "e2e"]
+    },
+    {
+      "front": "MOCK_CARD_3_FRONT",
+      "back": "MOCK_CARD_3_BACK",
+      "source_page": 3,
+      "tags": ["mock", "e2e"]
+    }
+  ],
+  "title_suggestion": "MOCK_DECK_TITLE",
+  "summary": "MOCK_DECK_SUMMARY",
+  "page_count": 3,
+  "processing_time_seconds": 0.01
+}
